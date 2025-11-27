@@ -5,7 +5,7 @@ import { saveAvailability, type AvailabilityData } from '@/app/dashboard/availab
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
-import { Loader2 } from 'lucide-react'
+import { LoadingButton } from '@/components/ui/LoadingButton'
 import { WEEKDAYS, DEFAULT_TIME_SLOTS } from '@/lib/utils/constants'
 
 interface AvailabilityFormProps {
@@ -115,16 +115,14 @@ export function AvailabilityForm({ initialWeekdays, initialTimeslots }: Availabi
         </div>
       </div>
 
-      <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 font-bold h-12" disabled={loading}>
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Guardando...
-          </>
-        ) : (
-          'Guardar disponibilidad'
-        )}
-      </Button>
+      <LoadingButton 
+        type="submit" 
+        className="w-full bg-green-500 hover:bg-green-600 font-bold h-12"
+        loading={loading}
+        loadingText="Guardando..."
+      >
+        Guardar disponibilidad
+      </LoadingButton>
     </form>
   )
 }
