@@ -26,7 +26,6 @@ export default async function ExplorePage() {
         name,
         bio,
         photo_url,
-        location,
         language
       )
     `)
@@ -47,22 +46,17 @@ export default async function ExplorePage() {
     // @ts-ignore
     photo_url: item.user?.photo_url,
     // @ts-ignore
-    location: item.user?.location,
-    // @ts-ignore
     language: item.user?.language,
   })) || []
 
   return (
     <>
       {/* Debug Info - Remove after fixing */}
-      <div className="bg-yellow-100 p-4 text-xs font-mono overflow-auto max-h-40">
-        <p><strong>Debug Info:</strong></p>
-        <p>Service Role Key Set: {process.env.SUPABASE_SERVICE_ROLE_KEY ? 'YES' : 'NO'}</p>
-        <p>Supabase URL: {process.env.NEXT_PUBLIC_SUPABASE_URL}</p>
-        <p>Error: {error ? JSON.stringify(error) : 'None'}</p>
-        <p>Guides Found: {guides?.length || 0}</p>
-        <p>Raw Data Sample: {JSON.stringify(guides?.[0] || {})}</p>
-      </div>
+      {error && (
+        <div className="bg-red-100 p-4 text-xs font-mono overflow-auto max-h-40 mb-4 rounded">
+          <p><strong>Error:</strong> {JSON.stringify(error)}</p>
+        </div>
+      )}
       <DirectoryClient initialGuides={formattedGuides} />
     </>
   )

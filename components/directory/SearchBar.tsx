@@ -23,7 +23,7 @@ export function SearchBar({
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
         <Input
           type="text"
-          placeholder="Buscar por nombre, ubicación o biografía..."
+          placeholder="Buscar por nombre o biografía..."
           className="pl-10 h-12 text-lg"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}

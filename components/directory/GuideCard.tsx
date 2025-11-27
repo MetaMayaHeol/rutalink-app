@@ -8,7 +8,6 @@ interface GuideCardProps {
     name: string
     bio: string | null
     photo_url: string | null
-    location: string | null
     language: string | null
     slug: string
   }
@@ -42,12 +41,6 @@ export function GuideCard({ guide }: GuideCardProps) {
         <h3 className="text-xl font-bold text-gray-900 mb-2">{guide.name}</h3>
         
         <div className="flex flex-col gap-2 mb-4 text-sm text-gray-600">
-          {guide.location && (
-            <div className="flex items-center gap-2">
-              <MapPin size={16} className="text-green-600" />
-              <span>{guide.location}</span>
-            </div>
-          )}
           {guide.language && (
             <div className="flex items-center gap-2">
               <Globe size={16} className="text-blue-600" />

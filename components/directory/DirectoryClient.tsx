@@ -8,7 +8,6 @@ interface Guide {
   name: string
   bio: string | null
   photo_url: string | null
-  location: string | null
   language: string | null
   slug: string
 }
@@ -32,10 +31,9 @@ export function DirectoryClient({ initialGuides }: DirectoryClientProps) {
       if (searchTerm) {
         const term = searchTerm.toLowerCase()
         const nameMatch = guide.name?.toLowerCase().includes(term)
-        const locationMatch = guide.location?.toLowerCase().includes(term)
         const bioMatch = guide.bio?.toLowerCase().includes(term)
         
-        return nameMatch || locationMatch || bioMatch
+        return nameMatch || bioMatch
       }
 
       return true
