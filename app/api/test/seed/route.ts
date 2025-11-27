@@ -94,8 +94,7 @@ export async function GET(request: Request) {
       .from('public_links')
       .insert({
         user_id: mockId,
-        slug,
-        active: true
+        slug
       })
 
     if (linkError) {

@@ -29,7 +29,6 @@ export default async function ExplorePage() {
         language
       )
     `)
-    .eq('active', true)
     .order('created_at', { ascending: false })
 
   if (error) {
