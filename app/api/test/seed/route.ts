@@ -78,7 +78,6 @@ export async function GET(request: Request) {
         bio: guide.bio,
         whatsapp: guide.whatsapp,
         photo_url: guide.photo_url,
-        role: 'guide',
         language: guide.language
       })
 
