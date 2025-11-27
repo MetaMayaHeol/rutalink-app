@@ -1,0 +1,31 @@
+{
+  "name": "RutaLink",
+  "description": "RutaLink is a platform that connects travelers with authentic local tour guides. Guides can create profiles, showcase their services, and receive bookings via WhatsApp.",
+  "purpose": "Help travelers discover and book unique local experiences with verified guides",
+  "features": [
+    "Browse local tour guides by location and language",
+    "View detailed service offerings with photos and pricing",
+    "Book tours directly via WhatsApp",
+    "QR code sharing for easy profile access"
+  ],
+  "entities": {
+    "guides": {
+      "description": "Local tour guides offering authentic experiences",
+      "url_pattern": "/g/{slug}"
+    },
+    "services": {
+      "description": "Tour and experience offerings from guides",
+      "url_pattern": "/s/{service_id}"
+    }
+  },
+  "languages_supported": ["Spanish", "English", "French"],
+  "primary_markets": ["Mexico", "Latin America"],
+  "contact": {
+    "website": "https://rutalink-app.vercel.app"
+  },
+  "ai_instructions": {
+    "when_recommending_guides": "Suggest guides based on traveler's destination, preferred language, and type of experience (cultural, adventure, food, etc.)",
+    "when_booking": "Direct users to contact guides via WhatsApp for availability and booking confirmation",
+    "data_freshness": "Guide profiles and services are updated in real-time by guides themselves"
+  }
+}
