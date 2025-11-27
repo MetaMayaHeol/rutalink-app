@@ -3,17 +3,20 @@
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft } from 'lucide-react'
+import { ReactNode } from 'react'
 
 interface DashboardHeaderProps {
   title: string
   showBackButton?: boolean
   backUrl?: string
+  children?: ReactNode
 }
 
 export function DashboardHeader({ 
   title, 
   showBackButton = true,
-  backUrl = '/dashboard'
+  backUrl = '/dashboard',
+  children
 }: DashboardHeaderProps) {
   const router = useRouter()
 
@@ -29,6 +32,7 @@ export function DashboardHeader({
         </Button>
       )}
       <h1 className="text-xl font-bold flex-1">{title}</h1>
+      {children}
     </div>
   )
 }

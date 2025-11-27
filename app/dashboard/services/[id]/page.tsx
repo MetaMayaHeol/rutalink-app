@@ -45,19 +45,17 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200 p-5 flex items-center gap-3 sticky top-0 z-10">
-        <DashboardHeader title="Editar servicio" showBackButton={false} />
-        
+      <DashboardHeader title="Editar servicio">
         <form action={async () => {
           'use server'
           await deleteService(id)
           redirect('/dashboard')
         }}>
-          <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600 hover:bg-red-50">
+          <Button type="submit" variant="ghost" size="icon" className="text-red-500 hover:text-red-600 hover:bg-red-50">
             <Trash2 size={24} />
           </Button>
         </form>
-      </div>
+      </DashboardHeader>
 
       <div className="p-5 max-w-md mx-auto">
         <ServiceForm 
