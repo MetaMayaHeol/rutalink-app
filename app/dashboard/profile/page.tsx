@@ -4,6 +4,7 @@ import { ProfileForm } from '@/components/dashboard/ProfileForm'
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { QRCodeCard } from '@/components/dashboard/QRCodeCard'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -41,6 +42,13 @@ export default async function ProfilePage() {
     profile = newProfile
   }
 
+  // Fetch user's public link
+  const { data: publicLink } = await supabase
+    .from('public_links')
+    .select('slug')
+    .eq('user_id', user.id)
+    .single()
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b border-gray-200 p-5 flex items-center gap-3 sticky top-0 z-10">
@@ -63,6 +71,18 @@ export default async function ProfilePage() {
           }}
           userId={user.id}
         />
+
+        {publicLink?.slug ? (
+          <div className="mt-8 border-t pt-8">
+            <QRCodeCard slug={publicLink.slug} />
+          </div>
+        ) : (
+          <div className="mt-8 border-t pt-8 text-center">
+            <p className="text-gray-500 mb-2">
+              ℹ️ Guarda tu perfil con un <strong>Nombre</strong> para generar tu Código QR y enlace público.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

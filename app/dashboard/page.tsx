@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { QRCodeCard } from '@/components/dashboard/QRCodeCard'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -127,6 +128,25 @@ export default async function DashboardPage() {
             </Button>
           </Link>
         </div>
+
+        {/* QR Code */}
+        {publicLink?.slug ? (
+          <div className="mt-6">
+            <QRCodeCard slug={publicLink.slug} />
+          </div>
+        ) : (
+          <div className="mt-6 bg-white rounded-xl p-6 border border-gray-200 text-center">
+            <h3 className="font-bold text-gray-900 mb-2">Tu Código QR</h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Completa tu perfil para generar tu código QR y compartir tu página.
+            </p>
+            <Link href="/dashboard/profile">
+              <Button variant="outline" className="w-full">
+                Configurar perfil
+              </Button>
+            </Link>
+          </div>
+        )}
 
         {/* Sign Out */}
         <form action="/auth/signout" method="post" className="mt-6">
