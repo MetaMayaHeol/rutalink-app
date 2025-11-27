@@ -12,7 +12,7 @@ export function PublicLinkDisplay({ slug }: PublicLinkDisplayProps) {
   useEffect(() => {
     if (slug) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
-      const cleanUrl = appUrl.replace(/^https?:\/\//, '')
+      const cleanUrl = appUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
       setDisplayUrl(`${cleanUrl}/g/${slug}`)
     }
   }, [slug])
