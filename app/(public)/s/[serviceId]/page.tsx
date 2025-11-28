@@ -1,10 +1,10 @@
 import { createStaticClient } from '@/lib/supabase/static'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import { Clock } from 'lucide-react'
 import { formatPrice, formatDuration } from '@/lib/utils/formatters'
 import { BookingSection } from '@/components/public/BookingSection'
 import { BackButton } from '@/components/public/BackButton'
+import { ImageLightbox } from '@/components/public/ImageLightbox'
 
 // Revalidate every hour
 export const revalidate = 3600
@@ -86,36 +86,25 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const availableWeekdays = weekdays?.map(w => w.weekday) || []
   const availableTimeslots = timeslots?.map(t => t.time) || []
 
+  // Prepare images for lightbox
+  const lightboxImages = photos?.map((photo, i) => ({
+    url: photo.url,
+    alt: `${service.title} - Photo ${i + 1}`
+  })) || []
+
   return (
     <div className="min-h-screen bg-white pb-24">
-      {/* Header Image */}
-      <div className="relative h-64 md:h-80 bg-gray-200 overflow-hidden group">
-        {photos && photos.length > 0 ? (
-          <Image
-            src={photos[0].url}
-            alt={service.title}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-            priority
-            quality={90}
-            sizes="(max-width: 768px) 100vw, 1200px"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400">
-            Sin foto
-          </div>
-        )}
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+      {/* Back Button */}
+      <div className="absolute top-4 left-4 z-10">
         <BackButton />
       </div>
 
-      <div className="p-5 max-w-lg mx-auto">
+      <div className="p-5 max-w-3xl mx-auto pt-16">
         {/* Title & Price */}
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{service.title}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{service.title}</h1>
         
-        <div className="flex items-center gap-4 mb-6">
-          <span className="text-2xl font-bold text-green-600">
+        <div className="flex items-center gap-4 mb-8">
+          <span className="text-3xl font-bold text-green-600">
             {formatPrice(service.price)}
           </span>
           <span className="flex items-center gap-1 text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">
@@ -124,34 +113,21 @@ export default async function ServicePage({ params }: ServicePageProps) {
           </span>
         </div>
 
+        {/* Photos Gallery with Lightbox */}
+        {lightboxImages.length > 0 && (
+          <div className="mb-8">
+            <h3 className="font-bold text-xl mb-4">Photos</h3>
+            <ImageLightbox images={lightboxImages} />
+          </div>
+        )}
+
         {/* Description */}
         <div className="mb-8">
-          <h3 className="font-bold text-lg mb-2">Acerca de la actividad</h3>
-          <p className="text-gray-700 leading-relaxed">
+          <h3 className="font-bold text-xl mb-3">Acerca de la actividad</h3>
+          <p className="text-gray-700 leading-relaxed text-lg">
             {service.description}
           </p>
         </div>
-
-        {/* Gallery (Remaining photos) */}
-        {photos && photos.length > 1 && (
-          <div className="mb-8">
-            <h3 className="font-bold text-lg mb-3">Galería</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {photos.slice(1).map((photo, i) => (
-                <div key={i} className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 shadow-sm group">
-                  <Image
-                    src={photo.url}
-                    alt={`${service.title} ${i + 2}`}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    quality={90}
-                    sizes="(max-width: 768px) 50vw, 600px"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Booking Section */}
         {guide.whatsapp ? (

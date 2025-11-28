@@ -133,6 +133,26 @@ export async function updateService(serviceId: string, formData: ServiceFormValu
   revalidatePath('/dashboard')
   revalidatePath('/dashboard/services')
   revalidatePath(`/dashboard/services/${serviceId}`)
+  revalidatePath(`/s/${serviceId}`) // Revalidate public service page
+  
+  // Also revalidate the guide's profile page
+  const { data: service } = await supabase
+    .from('services')
+    .select('user_id')
+    .eq('id', serviceId)
+    .single()
+  
+  if (service) {
+    const { data: link } = await supabase
+      .from('public_links')
+      .select('slug')
+      .eq('user_id', service.user_id)
+      .single()
+    
+    if (link) {
+      revalidatePath(`/g/${link.slug}`) // Revalidate guide profile page
+    }
+  }
   
   return { success: true }
 }
