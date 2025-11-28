@@ -4,9 +4,49 @@ import { Button } from '@/components/ui/button'
 import { MapPin, Globe, Shield, MessageCircle, Star, ArrowRight } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
 import { GuideCard } from '@/components/directory/GuideCard'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/seo/structured-data'
+import type { Metadata } from 'next'
 
 // Force dynamic to ensure we see the latest featured guides
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'RutaLink - Conecta con Guías Turísticos Locales en México',
+  description: 'Descubre experiencias auténticas con guías locales verificados. Sin intermediarios, sin comisiones. Contacto directo por WhatsApp. Tours personalizados en México.',
+  keywords: ['guías turísticos', 'tours México', 'guías locales', 'experiencias auténticas', 'turismo México', 'tours privados'],
+  openGraph: {
+    title: 'RutaLink - Guías Turísticos Locales en México',
+    description: 'Conecta directamente con guías locales expertos. Sin intermediarios, sin comisiones ocultas.',
+    url: 'https://rutalink.com',
+    siteName: 'RutaLink',
+    locale: 'es_MX',
+    type: 'website',
+    images: [{
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'RutaLink - Guías Turísticos Locales',
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'RutaLink - Guías Turísticos Locales',
+    description: 'Conecta con guías locales verificados en México',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
 
 async function getFeaturedGuides() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -43,9 +83,13 @@ async function getFeaturedGuides() {
 
 export default async function HomePage() {
   const featuredGuides = await getFeaturedGuides()
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <JsonLd data={generateOrganizationSchema(baseUrl)} />
+      <JsonLd data={generateWebSiteSchema(baseUrl)} />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <div className="relative bg-gray-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -280,5 +324,6 @@ export default async function HomePage() {
         </div>
       </footer>
     </div>
+    </>
   )
 }

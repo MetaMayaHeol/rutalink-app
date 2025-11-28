@@ -5,6 +5,8 @@ import { formatPrice, formatDuration } from '@/lib/utils/formatters'
 import { BookingSection } from '@/components/public/BookingSection'
 import { BackButton } from '@/components/public/BackButton'
 import { ImageLightbox } from '@/components/public/ImageLightbox'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateServiceSchema, generateBreadcrumbSchema } from '@/lib/seo/structured-data'
 
 // Revalidate every hour
 export const revalidate = 3600
@@ -23,16 +25,51 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ServicePageProps) {
   const { serviceId } = await params
   const supabase = createStaticClient()
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
   
   const { data: service } = await supabase
     .from('services')
-    .select('title, description')
+    .select('title, description, price')
     .eq('id', serviceId)
     .single()
 
+  if (!service) return { title: 'Servicio no encontrado' }
+
+  const { data: photos } = await supabase
+    .from('service_photos')
+    .select('url')
+    .eq('service_id', serviceId)
+    .order('order')
+    .limit(1)
+    .single()
+
+  const title = `${service.title} - Tour en México | RutaLink`
+  const description = service.description || `Reserva ${service.title} al mejor precio. Experiencia auténtica con guía local.`
+  const imageUrl = photos?.url || `${baseUrl}/og-default.png`
+
   return {
-    title: `${service?.title} | RutaLink`,
-    description: service?.description,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}/s/${serviceId}`,
+      siteName: 'RutaLink',
+      images: [{
+        url: imageUrl,
+        width: 1200,
+        height: 630,
+        alt: service.title,
+      }],
+      locale: 'es_MX',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
+    },
   }
 }
 
@@ -92,8 +129,43 @@ export default async function ServicePage({ params }: ServicePageProps) {
     alt: `${service.title} - Photo ${i + 1}`
   })) || []
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
+  const serviceUrl = `${baseUrl}/s/${serviceId}`
+  
+  // Fetch guide slug for breadcrumb
+  const { data: guideLink } = await supabase
+    .from('public_links')
+    .select('slug')
+    .eq('user_id', guide.id)
+    .single()
+
+  // Generate structured data
+  const serviceSchema = generateServiceSchema({
+    name: service.title,
+    description: service.description || undefined,
+    image: photos?.[0]?.url || undefined,
+    provider: {
+      name: guide.name || 'Guía RutaLink',
+      url: guideLink ? `${baseUrl}/g/${guideLink.slug}` : baseUrl,
+    },
+    offers: {
+      price: service.price,
+      priceCurrency: 'MXN',
+    },
+  })
+
+  const breadcrumbData = generateBreadcrumbSchema([
+    { name: 'Inicio', url: baseUrl },
+    { name: 'Explorar', url: `${baseUrl}/explorar` },
+    ...(guideLink ? [{ name: guide.name || 'Guía', url: `${baseUrl}/g/${guideLink.slug}` }] : []),
+    { name: service.title, url: serviceUrl },
+  ])
+
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <>
+      <JsonLd data={serviceSchema} />
+      <JsonLd data={breadcrumbData} />
+      <div className="min-h-screen bg-white pb-24">
       {/* Back Button */}
       <div className="absolute top-4 left-4 z-10">
         <BackButton />
@@ -144,5 +216,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
         )}
       </div>
     </div>
+    </>
   )
 }

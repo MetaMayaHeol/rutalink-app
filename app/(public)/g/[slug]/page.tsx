@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { MapPin, Clock, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatPrice, formatDuration } from '@/lib/utils/formatters'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateLocalBusinessSchema, generateBreadcrumbSchema } from '@/lib/seo/structured-data'
 
 // Revalidate every hour
 export const revalidate = 3600
@@ -23,6 +25,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: GuidePageProps) {
   const { slug } = await params
   const supabase = createStaticClient()
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
   
   const { data: link } = await supabase
     .from('public_links')
@@ -34,13 +37,37 @@ export async function generateMetadata({ params }: GuidePageProps) {
 
   const { data: user } = await supabase
     .from('users')
-    .select('name, bio')
+    .select('name, bio, photo_url, whatsapp')
     .eq('id', link.user_id)
     .single()
 
+  const title = `${user?.name} - Guía Turístico Local | RutaLink`
+  const description = user?.bio || `Descubre experiencias auténticas con ${user?.name}, guía turístico local verificado. Reserva tours personalizados directamente por WhatsApp.`
+  const imageUrl = user?.photo_url || `${baseUrl}/og-default.png`
+
   return {
-    title: `${user?.name} - Guía Turístico | RutaLink`,
-    description: user?.bio || `Reserva tours con ${user?.name}`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}/g/${slug}`,
+      siteName: 'RutaLink',
+      images: [{
+        url: imageUrl,
+        width: 1200,
+        height: 630,
+        alt: `${user?.name} - Guía Turístico`,
+      }],
+      locale: 'es_MX',
+      type: 'profile',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
+    },
   }
 }
 
@@ -86,8 +113,29 @@ export default async function GuidePage({ params }: GuidePageProps) {
     notFound()
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
+  const guideUrl = `${baseUrl}/g/${slug}`
+
+  // Generate structured data
+  const localBusinessData = generateLocalBusinessSchema({
+    name: guide.name || 'Guía RutaLink',
+    description: guide.bio || undefined,
+    image: guide.photo_url || undefined,
+    telephone: guide.whatsapp || undefined,
+    url: guideUrl,
+  })
+
+  const breadcrumbData = generateBreadcrumbSchema([
+    { name: 'Inicio', url: baseUrl },
+    { name: 'Explorar Guías', url: `${baseUrl}/explorar` },
+    { name: guide.name || 'Guía', url: guideUrl },
+  ])
+
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <>
+      <JsonLd data={localBusinessData} />
+      <JsonLd data={breadcrumbData} />
+      <div className="min-h-screen bg-white pb-24">
       {/* Header */}
       <div className="p-5 text-center bg-gradient-to-b from-gray-50 to-white">
         <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden relative ring-4 ring-white shadow-xl">
@@ -213,5 +261,6 @@ export default async function GuidePage({ params }: GuidePageProps) {
         </div>
       )}
     </div>
+    </>
   )
 }
