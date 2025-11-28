@@ -12,6 +12,9 @@ interface Guide {
   city: string | null
   country: string | null
   slug: string
+  is_verified?: boolean
+  averageRating?: number
+  reviewCount?: number
 }
 
 interface DirectoryClientProps {

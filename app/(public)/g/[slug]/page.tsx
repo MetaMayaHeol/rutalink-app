@@ -2,12 +2,15 @@ import { createStaticClient } from '@/lib/supabase/static'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Clock, Send } from 'lucide-react'
+import { MapPin, Clock, Send, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatPrice, formatDuration } from '@/lib/utils/formatters'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { generateLocalBusinessSchema, generateBreadcrumbSchema } from '@/lib/seo/structured-data'
 import { ViewTracker } from '@/components/analytics/ViewTracker'
+import { getReviews } from '@/app/actions/reviews'
+import { ReviewsList } from '@/components/public/ReviewsList'
+import { ReviewForm } from '@/components/public/ReviewForm'
 
 // Revalidate every hour
 export const revalidate = 3600
@@ -90,7 +93,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
   // 2. Fetch guide profile
   const { data: guide } = await supabase
     .from('users')
-    .select('id, name, bio, photo_url, whatsapp, city, country')
+    .select('id, name, bio, photo_url, whatsapp, city, country, is_verified')
     .eq('id', link.user_id)
     .single()
 
@@ -109,6 +112,9 @@ export default async function GuidePage({ params }: GuidePageProps) {
     .eq('user_id', link.user_id)
     .eq('active', true)
     .order('price')
+
+  // 5. Fetch reviews
+  const reviews = await getReviews(link.user_id)
 
   if (!guide) {
     notFound()
@@ -160,14 +166,21 @@ export default async function GuidePage({ params }: GuidePageProps) {
             </div>
           )}
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{guide.name}</h1>
+        
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900">{guide.name}</h1>
+          {guide.is_verified && (
+            <div className="text-green-500" title="Guía Verificado">
+              <ShieldCheck size={28} fill="currentColor" className="text-green-100 stroke-green-600" />
+            </div>
+          )}
+        </div>
+
         <p className="text-gray-600 flex items-center justify-center gap-1.5 text-sm">
           <MapPin size={16} className="text-green-600" />
           {guide.city ? `${guide.city}, ${guide.country || 'México'}` : 'Guía Local'}
         </p>
       </div>
-
-      {/* Gallery */}
       {photos && photos.length > 0 && (
         <div className="px-5 mb-8">
           <div className="grid grid-cols-3 gap-3">
@@ -244,6 +257,17 @@ export default async function GuidePage({ params }: GuidePageProps) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="px-5 mt-12">
+        <h2 className="font-bold text-lg mb-6">Reseñas</h2>
+        
+        <div className="mb-8">
+          <ReviewsList reviews={reviews} />
+        </div>
+
+        <ReviewForm guideId={guide.id} />
       </div>
 
       {/* Footer */}

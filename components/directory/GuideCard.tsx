@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, Globe } from 'lucide-react'
+import { MapPin, Globe, ShieldCheck, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LANGUAGE_NAMES } from '@/lib/utils/constants'
 
@@ -13,6 +13,9 @@ interface GuideCardProps {
     city: string | null
     country: string | null
     slug: string
+    is_verified?: boolean
+    averageRating?: number
+    reviewCount?: number
   }
 }
 
@@ -45,7 +48,36 @@ export function GuideCard({ guide }: GuideCardProps) {
       </div>
       
       <div className="p-5 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">{guide.name}</h3>
+        <div className="flex items-center gap-2 mb-2">
+          <h3 className="text-xl font-bold text-gray-900">{guide.name}</h3>
+          {guide.is_verified && (
+            <div className="text-green-500" title="Guía Verificado">
+              <ShieldCheck size={20} fill="currentColor" className="text-green-100 stroke-green-600" />
+            </div>
+          )}
+        </div>
+
+        {/* Rating Display */}
+        {guide.reviewCount && guide.reviewCount > 0 && (
+          <div className="flex items-center gap-1.5 mb-3">
+            <div className="flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  size={14}
+                  className={`${
+                    star <= Math.round(guide.averageRating || 0)
+                      ? 'fill-yellow-400 text-yellow-400'
+                      : 'text-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-sm text-gray-600">
+              {guide.averageRating?.toFixed(1)} ({guide.reviewCount})
+            </span>
+          </div>
+        )}
         
         <div className="flex flex-col gap-2 mb-4">
           {guide.languages && guide.languages.length > 0 && (

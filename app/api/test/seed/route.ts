@@ -34,6 +34,7 @@ export async function GET(request: Request) {
       languages: ['es', 'en'],
       whatsapp: '525512345678',
       photo_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&h=400',
+      is_verified: true
     },
     {
       name: 'Carlos Rivera',
@@ -43,6 +44,7 @@ export async function GET(request: Request) {
       languages: ['en', 'es', 'fr'],
       whatsapp: '529981234567',
       photo_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400',
+      is_verified: true
     },
     {
       name: 'Sophie Martin',
@@ -52,6 +54,7 @@ export async function GET(request: Request) {
       languages: ['fr', 'en'],
       whatsapp: '529511234567',
       photo_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&h=400',
+      is_verified: false
     },
     {
       name: 'Miguel Ángel',
@@ -61,6 +64,7 @@ export async function GET(request: Request) {
       languages: ['es'],
       whatsapp: '529851234567',
       photo_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&h=400',
+      is_verified: true
     },
     {
       name: 'Sarah Jenkins',
@@ -70,6 +74,7 @@ export async function GET(request: Request) {
       languages: ['en', 'es', 'de'],
       whatsapp: '525587654321',
       photo_url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&h=400',
+      is_verified: false
     }
   ]
 
@@ -92,7 +97,8 @@ export async function GET(request: Request) {
         country: guide.country,
         whatsapp: guide.whatsapp,
         photo_url: guide.photo_url,
-        languages: guide.languages
+        languages: guide.languages,
+        is_verified: guide.is_verified
       })
 
     if (userError) {
@@ -142,6 +148,33 @@ export async function GET(request: Request) {
           price: service.price,
           duration: service.duration,
           active: service.active
+        })
+    }
+
+    // 4. Create sample reviews
+    const sampleReviews = [
+      {
+        reviewer_name: 'María González',
+        rating: 5,
+        comment: '¡Experiencia increíble! El guía fue muy profesional y conocedor. Totalmente recomendado.'
+      },
+      {
+        reviewer_name: 'John Smith',
+        rating: 4,
+        comment: 'Great tour! Very informative and fun. Would definitely book again.'
+      }
+    ]
+
+    for (const review of sampleReviews) {
+      await supabase
+        .from('reviews')
+        .insert({
+          guide_id: mockId,
+          reviewer_name: review.reviewer_name,
+          rating: review.rating,
+          comment: review.comment,
+          approved: true, // Auto-approve seed reviews
+          reviewer_identifier: `seed_${review.reviewer_name.toLowerCase().replace(/\s/g, '_')}_${mockId}`
         })
     }
 

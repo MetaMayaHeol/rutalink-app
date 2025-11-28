@@ -63,7 +63,8 @@ async function getFeaturedGuides() {
         photo_url,
         languages,
         city,
-        country
+        country,
+        is_verified
       )
     `)
     .eq('active', true)
@@ -84,6 +85,8 @@ async function getFeaturedGuides() {
     city: item.user?.city,
     // @ts-ignore
     country: item.user?.country,
+    // @ts-ignore
+    is_verified: item.user?.is_verified,
   })) || []
 }
 

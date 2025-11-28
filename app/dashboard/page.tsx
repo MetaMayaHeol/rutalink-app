@@ -131,9 +131,14 @@ export default async function DashboardPage() {
               👤 Mi perfil
             </Button>
           </Link>
-          <Link href="/dashboard/analytics" className="col-span-2">
+          <Link href="/dashboard/analytics">
             <Button variant="outline" className="w-full h-12">
               📊 Analytics
+            </Button>
+          </Link>
+          <Link href="/dashboard/verification">
+            <Button variant="outline" className="w-full h-12 text-green-700 border-green-200 bg-green-50 hover:bg-green-100">
+              🛡️ Verificación
             </Button>
           </Link>
         </div>
