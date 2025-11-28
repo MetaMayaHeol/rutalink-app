@@ -239,7 +239,7 @@ export default async function HomePage() {
               </Button>
             </Link>
             <Link href="/explorar">
-              <Button variant="outline" className="h-14 px-8 text-lg rounded-full border-white/20 text-white hover:bg-white/10 hover:text-white">
+              <Button variant="outline" className="h-14 px-8 text-lg rounded-full border-white bg-transparent text-white hover:bg-white/10 hover:text-white">
                 Buscar un guía
               </Button>
             </Link>
