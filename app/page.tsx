@@ -61,7 +61,9 @@ async function getFeaturedGuides() {
         name,
         bio,
         photo_url,
-        languages
+        languages,
+        city,
+        country
       )
     `)
     .eq('active', true)
@@ -78,6 +80,10 @@ async function getFeaturedGuides() {
     photo_url: item.user?.photo_url,
     // @ts-ignore
     languages: item.user?.languages,
+    // @ts-ignore
+    city: item.user?.city,
+    // @ts-ignore
+    country: item.user?.country,
   })) || []
 }
 
