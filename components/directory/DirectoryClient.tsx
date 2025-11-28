@@ -8,7 +8,7 @@ interface Guide {
   name: string
   bio: string | null
   photo_url: string | null
-  language: string | null
+  languages: string[] | null
   slug: string
 }
 
@@ -23,7 +23,7 @@ export function DirectoryClient({ initialGuides }: DirectoryClientProps) {
   const filteredGuides = useMemo(() => {
     return initialGuides.filter(guide => {
       // Filter by language
-      if (languageFilter !== 'all' && guide.language !== languageFilter) {
+      if (languageFilter !== 'all' && guide.languages && !guide.languages.includes(languageFilter)) {
         return false
       }
 

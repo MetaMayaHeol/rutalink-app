@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   bio TEXT CHECK (char_length(bio) <= 300),
   whatsapp TEXT,
   photo_url TEXT,
-  language TEXT DEFAULT 'es' CHECK (language IN ('es', 'en', 'fr')),
+  languages TEXT[] DEFAULT ARRAY['es']::TEXT[] CHECK (array_length(languages, 1) > 0),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -240,14 +240,14 @@ CREATE POLICY "Users can delete own files" ON storage.objects
 -- Puedes descomentar esto para crear datos de prueba
 /*
 -- Usuario de ejemplo
-INSERT INTO users (id, email, name, bio, whatsapp, language)
+INSERT INTO users (id, email, name, bio, whatsapp, languages)
 VALUES (
   'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
   'carlos@example.com',
   'Carlos Mendoza',
   'Guía certificado con 8 años de experiencia. Conozco todos los secretos de la Riviera Maya.',
   '+52 984 123 4567',
-  'es'
+  ARRAY['es', 'en']
 );
 
 -- Enlace público

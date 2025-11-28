@@ -96,20 +96,55 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
         )}
       </div>
 
-      {/* Language */}
+      {/* Languages */}
       <div className="space-y-2">
-        <Label htmlFor="language">Idioma principal</Label>
-        <select
-          id="language"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          {...form.register('language')}
-        >
-          <option value="es">Español</option>
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-        </select>
-        {form.formState.errors.language && (
-          <p className="text-sm text-red-500">{form.formState.errors.language.message}</p>
+        <Label>Idiomas que hablas</Label>
+        <p className="text-sm text-gray-500 mb-3">Selecciona todos los idiomas en los que puedes guiar</p>
+        <div className="grid grid-cols-2 gap-3">
+          {(['es', 'en', 'fr', 'pt', 'de', 'it', 'zh', 'ja'] as const).map((lang) => {
+            const languageNames = {
+              es: 'Español',
+              en: 'English',
+              fr: 'Français',
+              pt: 'Português',
+              de: 'Deutsch',
+              it: 'Italiano',
+              zh: '中文',
+              ja: '日本語'
+            }
+            
+            const currentLanguages = form.watch('languages') || []
+            const isChecked = currentLanguages.includes(lang)
+            
+            return (
+              <label
+                key={lang}
+                className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${
+                  isChecked 
+                    ? 'border-green-500 bg-green-50' 
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={(e) => {
+                    const current = form.getValues('languages') || []
+                    if (e.target.checked) {
+                      form.setValue('languages', [...current, lang])
+                    } else {
+                      form.setValue('languages', current.filter(l => l !== lang))
+                    }
+                  }}
+                  className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                />
+                <span className="text-sm font-medium">{languageNames[lang]}</span>
+              </label>
+            )
+          })}
+        </div>
+        {form.formState.errors.languages && (
+          <p className="text-sm text-red-500">{form.formState.errors.languages.message}</p>
         )}
       </div>
 

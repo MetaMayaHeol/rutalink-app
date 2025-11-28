@@ -16,7 +16,18 @@ export const MAX_GUIDE_PHOTOS = 3
 export const MAX_BIO_LENGTH = 300
 export const MAX_DESCRIPTION_LENGTH = 300
 
-export const SUPPORTED_LANGUAGES = ['es', 'en', 'fr'] as const
+export const SUPPORTED_LANGUAGES = ['es', 'en', 'fr', 'pt', 'de', 'it', 'zh', 'ja'] as const
 export type Language = typeof SUPPORTED_LANGUAGES[number]
+
+export const LANGUAGE_NAMES: Record<Language, string> = {
+  es: 'Español',
+  en: 'English',
+  fr: 'Français',
+  pt: 'Português',
+  de: 'Deutsch',
+  it: 'Italiano',
+  zh: '中文',
+  ja: '日本語'
+}
 
 export const DEFAULT_LANGUAGE: Language = 'es'

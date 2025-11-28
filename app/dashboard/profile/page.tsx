@@ -57,7 +57,7 @@ export default async function ProfilePage() {
             name: profile.name || '',
             bio: profile.bio || '',
             whatsapp: profile.whatsapp || '',
-            language: profile.language || 'es',
+            languages: profile.languages || ['es'],
             photo_url: profile.photo_url || '',
           }}
           userId={user.id}

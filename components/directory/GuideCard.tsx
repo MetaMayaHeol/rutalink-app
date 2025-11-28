@@ -2,24 +2,19 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { LANGUAGE_NAMES } from '@/lib/utils/constants'
 
 interface GuideCardProps {
   guide: {
     name: string
     bio: string | null
     photo_url: string | null
-    language: string | null
+    languages: string[] | null
     slug: string
   }
 }
 
 export function GuideCard({ guide }: GuideCardProps) {
-  const languageMap: Record<string, string> = {
-    es: 'Español',
-    en: 'English',
-    fr: 'Français'
-  }
-
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full group">
       <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
@@ -42,11 +37,20 @@ export function GuideCard({ guide }: GuideCardProps) {
       <div className="p-5 flex flex-col flex-grow">
         <h3 className="text-xl font-bold text-gray-900 mb-2">{guide.name}</h3>
         
-        <div className="flex flex-col gap-2 mb-4 text-sm text-gray-600">
-          {guide.language && (
-            <div className="flex items-center gap-2">
-              <Globe size={16} className="text-blue-600" />
-              <span>{languageMap[guide.language] || guide.language.toUpperCase()}</span>
+        <div className="flex flex-col gap-2 mb-4">
+          {guide.languages && guide.languages.length > 0 && (
+            <div className="flex items-start gap-2">
+              <Globe size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
+              <div className="flex flex-wrap gap-1.5">
+                {guide.languages.map((lang) => (
+                  <span 
+                    key={lang}
+                    className="inline-block px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-medium rounded-full"
+                  >
+                    {LANGUAGE_NAMES[lang as keyof typeof LANGUAGE_NAMES] || lang.toUpperCase()}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>
