@@ -47,10 +47,14 @@ export async function generateMetadata({ params }: GuidePageProps) {
     .eq('id', link.user_id)
     .single()
 
-  const title = `${user?.name} - Guía Turístico Certificado en ${user?.city || 'México'} | RutaLink`
-  const description = user?.bio 
-    ? `${user.bio.slice(0, 120)} Reserva tours únicos y personalizados con ${user?.name}. Contacta directamente por WhatsApp.`
-    : `Descubre experiencias auténticas e inolvidables con ${user?.name}, guía turístico local certificado. Reserva tours personalizados y explora como los locales. Contacto directo por WhatsApp.`
+  // Optimize for OpenGraph (Title: 50-60 chars, Description: 110-160 chars)
+  const cityShort = user?.city || 'México'
+  const title = `${user?.name} | Guía en ${cityShort} - RutaLink`.slice(0, 60)
+  
+  const description = user?.bio && user.bio.length > 50
+    ? `${user.bio.slice(0, 105)}... Reserva tours con ${user?.name}. WhatsApp directo.`
+    : `Experiencias auténticas con ${user?.name}, guía local en ${cityShort}. Tours personalizados y únicos. Reserva fácil por WhatsApp.`
+  
   const imageUrl = user?.photo_url || `${baseUrl}/og-default.png`
   const url = `${baseUrl}/g/${slug}`
 
