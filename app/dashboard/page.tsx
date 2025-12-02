@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { QRCodeCard } from '@/components/dashboard/QRCodeCard'
 import { PublicLinkDisplay } from '@/components/dashboard/PublicLinkDisplay'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { isAdmin } from '@/lib/auth/admin'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -37,6 +38,9 @@ export default async function DashboardPage() {
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+  // Check if user is admin
+  const userIsAdmin = await isAdmin()
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -120,7 +124,7 @@ export default async function DashboardPage() {
         </Link>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 mt-4">
+        <div className={`grid ${userIsAdmin ? 'grid-cols-2' : 'grid-cols-2'} gap-3 mt-4`}>
           <Link href="/dashboard/availability">
             <Button variant="outline" className="w-full h-12">
               📅 Disponibilidades
@@ -141,6 +145,13 @@ export default async function DashboardPage() {
               🛡️ Verificación
             </Button>
           </Link>
+          {userIsAdmin && (
+            <Link href="/dashboard/admin/reviews" className="col-span-2">
+              <Button variant="outline" className="w-full h-12 text-purple-700 border-purple-200 bg-purple-50 hover:bg-purple-100">
+                👑 Panel de administración
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* QR Code */}
