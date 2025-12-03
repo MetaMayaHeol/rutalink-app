@@ -61,11 +61,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 import { JsonLd } from '@/components/seo/JsonLd'
-import { generateTouristDestinationSchema, generateBreadcrumbSchema } from '@/lib/seo/structured-data'
+import { generateTouristDestinationSchema, generateBreadcrumbSchema, generateFAQSchema } from '@/lib/seo/structured-data'
+import { generateCityFAQs } from '@/lib/seo/faq-generator'
+import { FAQSection } from '@/components/seo/FAQSection'
 
 export default async function CityPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const city = getCityBySlug(slug)
+
+  if (!city) {
+    notFound()
+  }
 
   if (!city) {
     notFound()
@@ -115,6 +121,10 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
   const cityUrl = `${baseUrl}/ciudad/${slug}`
 
+  // Generate FAQs
+  const faqs = generateCityFAQs(city.name)
+  const faqSchema = generateFAQSchema(faqs)
+
   // Generate structured data
   const destinationSchema = generateTouristDestinationSchema({
     name: city.name,
@@ -138,6 +148,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
     <div className="min-h-screen bg-white">
       <JsonLd data={destinationSchema} />
       <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={faqSchema} />
       {/* Hero Section */}
       {/* Hero Section */}
       <CityHero 
@@ -230,6 +241,9 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
           </div>
         </div>
       </div>
+
+      {/* FAQ Section */}
+      <FAQSection title={`Preguntas frecuentes sobre ${city.name}`} faqs={faqs} />
 
       {/* Popular Activities Internal Linking */}
       <div className="py-16 border-t border-gray-100">

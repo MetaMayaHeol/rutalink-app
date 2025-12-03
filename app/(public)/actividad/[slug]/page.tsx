@@ -61,7 +61,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 import { JsonLd } from '@/components/seo/JsonLd'
-import { generateTouristAttractionSchema, generateBreadcrumbSchema } from '@/lib/seo/structured-data'
+import { generateTouristAttractionSchema, generateBreadcrumbSchema, generateFAQSchema } from '@/lib/seo/structured-data'
+import { generateActivityFAQs } from '@/lib/seo/faq-generator'
+import { FAQSection } from '@/components/seo/FAQSection'
 
 export default async function ActivityPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -139,6 +141,10 @@ export default async function ActivityPage({ params }: { params: Promise<{ slug:
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
   const activityUrl = `${baseUrl}/actividad/${slug}`
 
+  // Generate FAQs
+  const faqs = generateActivityFAQs(activity.name)
+  const faqSchema = generateFAQSchema(faqs)
+
   // Generate structured data
   const attractionSchema = generateTouristAttractionSchema({
     name: `Tours de ${activity.name}`,
@@ -158,6 +164,7 @@ export default async function ActivityPage({ params }: { params: Promise<{ slug:
     <div className="min-h-screen bg-white">
       <JsonLd data={attractionSchema} />
       <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={faqSchema} />
       {/* Hero Section */}
       {/* Hero Section */}
       <ActivityHero 
@@ -257,6 +264,9 @@ export default async function ActivityPage({ params }: { params: Promise<{ slug:
           </div>
         </div>
       </div>
+
+      {/* FAQ Section */}
+      <FAQSection title={`Preguntas frecuentes sobre tours de ${activity.name}`} faqs={faqs} />
 
       {/* Popular Destinations Internal Linking */}
       <div className="py-16 border-t border-gray-100">
