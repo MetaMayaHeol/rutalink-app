@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next'
 import { createStaticClient } from '@/lib/supabase/static'
+import { cities } from '@/lib/seo/cities'
+import { activities } from '@/lib/seo/activities'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink-app.vercel.app'
@@ -33,6 +35,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/faq`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/support`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/cancellation-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
       url: `${baseUrl}/auth/login`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -40,12 +60,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
+  // City pages (SEO landing pages)
+  const cityPages: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/ciudad/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
+  // Activity pages (SEO landing pages)
+  const activityPages: MetadataRoute.Sitemap = activities.map((activity) => ({
+    url: `${baseUrl}/actividad/${activity.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
   // Guide profiles
   const guidePages: MetadataRoute.Sitemap = (publicLinks || []).map((link) => ({
     url: `${baseUrl}/g/${link.slug}`,
     lastModified: new Date(link.updated_at),
     changeFrequency: 'weekly' as const,
-    priority: 0.8,
+    priority: 0.7,
   }))
 
   // Services
@@ -53,8 +89,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}/s/${service.id}`,
     lastModified: new Date(service.updated_at),
     changeFrequency: 'weekly' as const,
-    priority: 0.7,
+    priority: 0.6,
   }))
 
-  return [...staticPages, ...guidePages, ...servicePages]
+  return [...staticPages, ...cityPages, ...activityPages, ...guidePages, ...servicePages]
 }
+
