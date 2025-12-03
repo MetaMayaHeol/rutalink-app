@@ -11,9 +11,11 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { MultiImageUploader } from '@/components/dashboard/MultiImageUploader'
+import { MultiSelect } from '@/components/ui/multi-select'
 import { toast } from 'sonner'
 import { LoadingButton } from '@/components/ui/LoadingButton'
 import { useRouter } from 'next/navigation'
+import { cities } from '@/lib/seo/cities'
 
 interface ServiceFormProps {
   initialData?: ServiceFormValues
@@ -32,6 +34,7 @@ export function ServiceForm({ initialData, serviceId, userId }: ServiceFormProps
     duration: 60,
     active: true,
     photos: [],
+    locations: [],
   }
 
   const form = useForm<ServiceFormValues>({
@@ -85,6 +88,23 @@ export function ServiceForm({ initialData, serviceId, userId }: ServiceFormProps
         {form.formState.errors.title && (
           <p className="text-sm text-red-500">{form.formState.errors.title.message}</p>
         )}
+      </div>
+
+      {/* Locations */}
+      <div className="space-y-2">
+        <Label htmlFor="locations">Ciudades donde ofreces este tour</Label>
+        <MultiSelect
+          options={cities.map(c => ({ label: c.name, value: c.name }))}
+          selected={form.watch('locations') || []}
+          onChange={(selected) => form.setValue('locations', selected)}
+          placeholder="Selecciona las ciudades..."
+        />
+        {form.formState.errors.locations && (
+          <p className="text-sm text-red-500">{form.formState.errors.locations.message}</p>
+        )}
+        <p className="text-xs text-gray-500">
+          Selecciona todas las ciudades donde realizas este tour
+        </p>
       </div>
 
       {/* Price & Duration */}

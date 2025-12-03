@@ -78,14 +78,15 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
   }
 
   // Fetch guides for this city
+  // Fetch guides who have active services in this city
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   const supabase = createClient(supabaseUrl, supabaseKey)
 
-  const { data: guides } = await supabase
-    .from('public_links')
+  // Query services that include this city in their locations
+  const { data: services } = await supabase
+    .from('services')
     .select(`
-      slug,
       user:users!inner (
         name,
         bio,
@@ -93,30 +94,40 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
         languages,
         city,
         country,
-        is_verified
+        is_verified,
+        public_links!inner (
+          slug,
+          active
+        )
       )
     `)
+    .contains('locations', [city.name])
     .eq('active', true)
-    .eq('users.city', city.name)
-    .limit(12)
+    .eq('users.public_links.active', true)
+    .limit(50)
 
-  const formattedGuides = guides?.map(item => ({
-    slug: item.slug,
-    // @ts-ignore
-    name: item.user?.name || 'Guía RutaLink',
-    // @ts-ignore
-    bio: item.user?.bio,
-    // @ts-ignore
-    photo_url: item.user?.photo_url,
-    // @ts-ignore
-    languages: item.user?.languages,
-    // @ts-ignore
-    city: item.user?.city,
-    // @ts-ignore
-    country: item.user?.country,
-    // @ts-ignore
-    is_verified: item.user?.is_verified,
-  })) || []
+  // Deduplicate guides (a guide might have multiple services in the same city)
+  const uniqueGuidesMap = new Map()
+  
+  services?.forEach((service: any) => {
+    if (service.user?.public_links?.[0]) {
+      const guide = {
+        slug: service.user.public_links[0].slug,
+        name: service.user.name || 'Guía RutaLink',
+        bio: service.user.bio,
+        photo_url: service.user.photo_url,
+        languages: service.user.languages,
+        city: service.user.city,
+        country: service.user.country,
+        is_verified: service.user.is_verified,
+      }
+      if (!uniqueGuidesMap.has(guide.slug)) {
+        uniqueGuidesMap.set(guide.slug, guide)
+      }
+    }
+  })
+
+  const formattedGuides = Array.from(uniqueGuidesMap.values())
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
   const cityUrl = `${baseUrl}/ciudad/${slug}`

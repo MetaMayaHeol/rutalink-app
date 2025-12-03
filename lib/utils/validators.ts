@@ -20,6 +20,7 @@ export const serviceSchema = z.object({
   duration: z.coerce.number().min(15, 'La duración mínima es 15 minutos'),
   active: z.boolean().default(true),
   photos: z.array(z.string().url()).max(3, 'Máximo 3 fotos por servicio').optional(),
+  locations: z.array(z.string()).min(1, 'Debes seleccionar al menos una ciudad').default([]),
 })
 
 export type ServiceFormValues = z.infer<typeof serviceSchema>
