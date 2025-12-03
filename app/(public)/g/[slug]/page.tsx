@@ -2,7 +2,7 @@ import { createStaticClient } from '@/lib/supabase/static'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Clock, Send } from 'lucide-react'
+import { MapPin, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatPrice, formatDuration } from '@/lib/utils/formatters'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -14,6 +14,7 @@ import { ReviewForm } from '@/components/public/ReviewForm'
 import { ShareButton } from '@/components/public/ShareButton'
 import { RatingSummary } from '@/components/public/RatingSummary'
 import { VerificationBadge } from '@/components/public/VerificationBadge'
+import { StickyWhatsAppCTA } from '@/components/public/StickyWhatsAppCTA'
 
 // Revalidate every hour
 export const revalidate = 3600
@@ -339,21 +340,10 @@ export default async function GuidePage({ params }: GuidePageProps) {
 
       {/* WhatsApp Sticky Button */}
       {guide.whatsapp && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 z-20 pointer-events-none">
-          <div className="max-w-md mx-auto pointer-events-auto">
-            <Link
-              href={`https://wa.me/${guide.whatsapp.replace(/\D/g, '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block shadow-xl rounded-full overflow-hidden"
-            >
-              <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold h-14 text-lg gap-2 rounded-full transition-all hover:scale-[1.02]">
-                <Send size={20} />
-                Contactar por WhatsApp
-              </Button>
-            </Link>
-          </div>
-        </div>
+        <StickyWhatsAppCTA 
+          phoneNumber={guide.whatsapp} 
+          guideName={guide.name || undefined}
+        />
       )}
     </div>
     </>

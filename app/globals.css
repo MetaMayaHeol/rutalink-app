@@ -120,3 +120,32 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom animations for WhatsApp CTA */
+@keyframes pulse-shadow {
+  0%, 100% {
+    box-shadow: 0 20px 25px -5px rgba(22, 163, 74, 0.3), 
+                0 10px 10px -5px rgba(22, 163, 74, 0.2);
+  }
+  50% {
+    box-shadow: 0 25px 50px -12px rgba(22, 163, 74, 0.5), 
+                0 15px 20px -10px rgba(22, 163, 74, 0.3);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-pulse-shadow {
+  animation: pulse-shadow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 3s linear infinite;
+}
