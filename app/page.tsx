@@ -8,6 +8,8 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/seo/structured-data'
 import { TestimonialsSection } from '@/components/public/TestimonialsSection'
 import { BusinessModelSection } from '@/components/public/BusinessModelSection'
+import { DestinationsGrid } from '@/components/public/DestinationsGrid'
+import { ActivitiesGrid } from '@/components/public/ActivitiesGrid'
 import type { Metadata } from 'next'
 
 // Force dynamic to ensure we see the latest featured guides
@@ -175,6 +177,15 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* Destinations Section - NEW */}
+      <DestinationsGrid />
+
+      {/* Activities Section - NEW */}
+      <ActivitiesGrid />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
       {/* Business Model Section */}
       <BusinessModelSection />
 
@@ -282,9 +293,6 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
 
       {/* CTA Section */}
       <div className="bg-gray-900 text-white py-24 relative overflow-hidden">
