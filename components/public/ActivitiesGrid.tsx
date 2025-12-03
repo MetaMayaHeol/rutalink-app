@@ -40,9 +40,17 @@ export async function ActivitiesGrid() {
       for (const keyword of activity.keywords) {
         const { count: keywordCount } = await supabase
           .from('services')
-          .select('id', { count: 'exact', head: true })
+          .select(`
+            id,
+            user:users!inner (
+              public_links!inner (
+                active
+              )
+            )
+          `, { count: 'exact', head: true })
           .ilike('title', `%${keyword}%`)
           .eq('active', true)
+          .eq('user.public_links.active', true)
         
         if (keywordCount) count += keywordCount
       }

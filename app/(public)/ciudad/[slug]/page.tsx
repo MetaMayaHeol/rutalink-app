@@ -103,7 +103,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
     `)
     .contains('locations', [city.name])
     .eq('active', true)
-    .eq('users.public_links.active', true)
+    .eq('user.public_links.active', true)
     .limit(50)
 
   // Deduplicate guides (a guide might have multiple services in the same city)

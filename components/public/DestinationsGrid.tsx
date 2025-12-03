@@ -11,12 +11,20 @@ export async function DestinationsGrid() {
   // Fetch guide counts for all cities in parallel
   const citiesWithCounts = await Promise.all(
     cities.map(async (city) => {
-      // Count unique guides who have active services in this city
+      // Count unique guides who have active services in this city AND active public profile
       const { data, error } = await supabase
         .from('services')
-        .select('user_id')
+        .select(`
+          user_id,
+          user:users!inner (
+            public_links!inner (
+              active
+            )
+          )
+        `)
         .contains('locations', [city.name])
         .eq('active', true)
+        .eq('user.public_links.active', true)
       
       // Get unique user IDs
       const uniqueGuides = new Set(data?.map(s => s.user_id))
