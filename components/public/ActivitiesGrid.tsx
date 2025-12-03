@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { activities } from '@/lib/seo/activities'
+import { createClient } from '@supabase/supabase-js'
 import { 
   UtensilsCrossed, 
   Landmark, 
@@ -23,7 +24,44 @@ const activityIcons: Record<string, any> = {
   'experiencias-locales': Sparkles,
 }
 
-export function ActivitiesGrid() {
+export async function ActivitiesGrid() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const supabase = createClient(supabaseUrl, supabaseKey)
+
+  // Fetch service counts for all activities in parallel
+  const activitiesWithCounts = await Promise.all(
+    activities.map(async (activity) => {
+      // Count active services matching keywords
+      // Note: This is a simple keyword match. For production, consider a more robust tagging system.
+      let count = 0
+      
+      // Try to match any of the keywords
+      for (const keyword of activity.keywords) {
+        const { count: keywordCount } = await supabase
+          .from('services')
+          .select('id', { count: 'exact', head: true })
+          .ilike('title', `%${keyword}%`)
+          .eq('active', true)
+        
+        if (keywordCount) count += keywordCount
+      }
+      
+      return { ...activity, serviceCount: count }
+    })
+  )
+
+  // Filter activities with at least 1 service and sort by count
+  const activeActivities = activitiesWithCounts
+    .filter(a => a.serviceCount > 0)
+    .sort((a, b) => b.serviceCount - a.serviceCount)
+    .slice(0, 8)
+
+  // Fallback if no activities found
+  const displayActivities = activeActivities.length > 0
+    ? activeActivities
+    : activities.slice(0, 4).map(a => ({ ...a, serviceCount: 0 }))
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-5">
@@ -37,7 +75,7 @@ export function ActivitiesGrid() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {activities.map((activity) => {
+          {displayActivities.map((activity) => {
             const Icon = activityIcons[activity.slug] || Sparkles
 
             return (
@@ -47,6 +85,13 @@ export function ActivitiesGrid() {
                 className="group relative overflow-hidden rounded-2xl bg-white hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-xl border border-gray-100 hover:border-green-200"
               >
                 <div className="aspect-[4/5] p-6 flex flex-col items-center justify-center text-center">
+                  {/* Service Count Badge */}
+                  {activity.serviceCount > 0 && (
+                    <div className="absolute top-4 right-4 bg-green-50 text-green-700 px-2 py-1 rounded-md text-xs font-bold">
+                      {activity.serviceCount}
+                    </div>
+                  )}
+
                   {/* Icon */}
                   <div className="w-16 h-16 mb-4 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
                     <Icon size={32} className="text-white" strokeWidth={2} />
