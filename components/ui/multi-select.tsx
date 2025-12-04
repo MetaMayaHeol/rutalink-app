@@ -39,17 +39,31 @@ export function MultiSelect({
   className,
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false)
+  const [inputValue, setInputValue] = React.useState("")
 
   const handleSelect = (value: string) => {
     const newSelected = selected.includes(value)
       ? selected.filter((item) => item !== value)
       : [...selected, value]
     onChange(newSelected)
+    setInputValue("") // Reset search after selection
+  }
+
+  const handleCreate = () => {
+    if (inputValue && !selected.includes(inputValue)) {
+      onChange([...selected, inputValue])
+      setInputValue("")
+    }
   }
 
   const handleRemove = (value: string) => {
     onChange(selected.filter((item) => item !== value))
   }
+
+  // Filter options based on input
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(inputValue.toLowerCase())
+  )
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
@@ -60,6 +74,7 @@ export function MultiSelect({
             role="combobox"
             aria-expanded={open}
             className="w-full justify-between"
+            type="button" // Important: prevent form submission
           >
             {selected.length > 0
               ? `${selected.length} sélectionné${selected.length > 1 ? 's' : ''}`
@@ -68,18 +83,36 @@ export function MultiSelect({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
-          <Command>
-            <CommandInput placeholder="Rechercher..." />
-            <CommandEmpty>Aucune option trouvée.</CommandEmpty>
+          <Command shouldFilter={false}>
+            <CommandInput 
+              placeholder="Rechercher ou ajouter..." 
+              value={inputValue}
+              onValueChange={setInputValue}
+            />
+            <CommandEmpty>
+              <div className="p-2">
+                <p className="text-sm text-muted-foreground mb-2">Aucune ville trouvée.</p>
+                {inputValue && (
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    className="w-full justify-start"
+                    onClick={handleCreate}
+                    type="button"
+                  >
+                    <span className="mr-2">+</span>
+                    Ajouter "{inputValue}"
+                  </Button>
+                )}
+              </div>
+            </CommandEmpty>
             <CommandGroup className="max-h-64 overflow-auto">
-              {options.map((option) => (
+              {filteredOptions.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.label} // Use label for search matching
-                  onSelect={() => {
-                    handleSelect(option.value)
-                    setOpen(true) // Keep open for multiple selection
-                  }}
+                  value={option.label}
+                  onSelect={() => handleSelect(option.value)}
+                  className="cursor-pointer"
                 >
                   <div
                     className={cn(
