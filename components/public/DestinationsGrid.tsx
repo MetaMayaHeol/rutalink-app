@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { cities } from '@/lib/seo/cities'
 import { MapPin } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
@@ -59,9 +60,25 @@ export async function DestinationsGrid() {
             <Link
               key={city.slug}
               href={`/ciudad/${city.slug}`}
-              className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 transition-all duration-300 shadow-sm hover:shadow-xl"
+              className="group relative overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300"
             >
-              <div className="aspect-[4/5] p-6 flex flex-col justify-end">
+              <div className="aspect-[4/5] relative">
+                {/* Background Image or Gradient */}
+                {city.heroImage ? (
+                  <Image
+                    src={city.heroImage}
+                    alt={city.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-green-100" />
+                )}
+                
+                {/* Overlay gradient for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
                 {/* Guide Count Badge */}
                 {city.guideCount > 0 && (
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-green-700 shadow-sm">
@@ -74,18 +91,15 @@ export async function DestinationsGrid() {
                   <MapPin size={20} className="text-green-600" />
                 </div>
 
-                {/* Content */}
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-green-700 transition-colors">
+                {/* Content - positioned at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-green-300 transition-colors">
                     {city.name}
                   </h3>
-                  <p className="text-sm text-gray-600 font-medium">
+                  <p className="text-sm text-white/80 font-medium">
                     {city.state}
                   </p>
                 </div>
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </Link>
           ))}
