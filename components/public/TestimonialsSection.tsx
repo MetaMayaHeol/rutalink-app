@@ -12,25 +12,18 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    name: 'Ana García',
+    name: 'Constanza García',
     location: 'CDMX',
     rating: 5,
-    quote: '¡Experiencia inolvidable! María nos mostró rincones de Mérida que jamás habríamos encontrado solos. Totalmente recomendado.',
+    quote: '¡Experiencia inolvidable! Ana nos mostró rincones de Mérida que jamás habríamos encontrado solos. Totalmente recomendado.',
     tourReference: 'Tour Cultural en Mérida',
   },
   {
     name: 'John Smith',
     location: 'USA',
     rating: 5,
-    quote: 'Amazing cenotes tour in Valladolid! Carlos knows every hidden spot. Best experience in the Yucatan.',
+    quote: 'Amazing cenotes tour in Valladolid! Alejandro knows every hidden spot. Best experience in the Yucatan.',
     tourReference: 'Cenotes Tour en Valladolid',
-  },
-  {
-    name: 'Laura Martínez',
-    location: 'España',
-    rating: 5,
-    quote: 'Tours en Tulum espectaculares. Contacto directo, sin comisiones ocultas. La guía fue súper profesional y atenta.',
-    tourReference: 'Tour Arqueológico en Tulum',
   },
   {
     name: 'Roberto Silva',
