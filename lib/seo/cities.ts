@@ -50,10 +50,10 @@ export const cities: City[] = [
     slug: 'mani',
     name: 'Maní',
     state: 'Yucatán',
-    description: 'Pueblo Mágico cuna de la cochinita pibil, con historia maya y colonial fascinante.',
-    highlights: ['Gastronomía Típica', 'Convento de San Miguel', 'Historia Maya', 'Cochinita Pibil'],
+    description: 'Pueblo Mágico cuna del poc chuc, con historia maya y colonial fascinante.',
+    highlights: ['Gastronomía Típica', 'Convento de San Miguel', 'Historia Maya', 'Poc Chuc'],
     heroImage: '/images/cities/mani.jpg',
-    metaDescription: 'Tours gastronómicos en Maní, cuna de la cochinita pibil. Guías locales expertos.',
+    metaDescription: 'Tours gastronómicos en Maní, cuna del poc chuc. Guías locales expertos.',
   },
   {
     slug: 'uxmal',
