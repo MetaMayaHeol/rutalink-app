@@ -11,6 +11,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command"
 import {
   Popover,
@@ -89,45 +90,49 @@ export function MultiSelect({
               value={inputValue}
               onValueChange={setInputValue}
             />
-            <CommandEmpty>
-              <div className="p-2">
-                <p className="text-sm text-muted-foreground mb-2">Aucune ville trouvée.</p>
-                {inputValue && (
-                  <Button 
-                    variant="secondary" 
-                    size="sm" 
-                    className="w-full justify-start"
-                    onClick={handleCreate}
-                    type="button"
+            <CommandList>
+              <CommandEmpty>
+                <div className="p-2">
+                  <p className="text-sm text-muted-foreground mb-2">Aucune ville trouvée.</p>
+                  {inputValue && (
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      className="w-full justify-start"
+                      onClick={handleCreate}
+                      type="button"
+                    >
+                      <span className="mr-2">+</span>
+                      Ajouter "{inputValue}"
+                    </Button>
+                  )}
+                </div>
+              </CommandEmpty>
+              <CommandGroup className="max-h-64 overflow-auto">
+                {filteredOptions.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.label}
+                    onSelect={() => {
+                      handleSelect(option.value)
+                    }}
+                    className="cursor-pointer"
                   >
-                    <span className="mr-2">+</span>
-                    Ajouter "{inputValue}"
-                  </Button>
-                )}
-              </div>
-            </CommandEmpty>
-            <CommandGroup className="max-h-64 overflow-auto">
-              {filteredOptions.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.label}
-                  onSelect={() => handleSelect(option.value)}
-                  className="cursor-pointer"
-                >
-                  <div
-                    className={cn(
-                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                      selected.includes(option.value)
-                        ? "bg-primary text-primary-foreground"
-                        : "opacity-50 [&_svg]:invisible"
-                    )}
-                  >
-                    <Check className="h-4 w-4" />
-                  </div>
-                  <span>{option.label}</span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
+                    <div
+                      className={cn(
+                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                        selected.includes(option.value)
+                          ? "bg-primary text-primary-foreground"
+                          : "opacity-50 [&_svg]:invisible"
+                      )}
+                    >
+                      <Check className="h-4 w-4" />
+                    </div>
+                    <span>{option.label}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
