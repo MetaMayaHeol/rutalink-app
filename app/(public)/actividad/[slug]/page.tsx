@@ -80,61 +80,51 @@ export default async function ActivityPage({ params }: { params: Promise<{ slug:
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   const supabase = createClient(supabaseUrl, supabaseKey)
 
-  // Search for guides with services matching activity keywords
+  // Search for guides with services matching this activity category
   const { data: services } = await supabase
     .from('services')
     .select(`
-      user_id,
-      title,
-      users!inner (
-        id,
+      user:users!inner (
         name,
         bio,
         photo_url,
         languages,
         city,
         country,
-        is_verified
-      ),
-      public_links!inner (
-        slug,
-        active
+        is_verified,
+        public_links!inner (
+          slug,
+          active
+        )
       )
     `)
     .contains('categories', [activity.name])
-    .eq('public_links.active', true)
+    .eq('active', true)
+    .eq('user.public_links.active', true)
     .limit(50)
 
-  // Deduplicate by user
-  const uniqueGuides = new Map()
+  // Deduplicate guides (a guide might have multiple services in the same activity)
+  const uniqueGuidesMap = new Map()
   
-  services?.forEach(service => {
-    if (service.users) {
-      const userId = service.user_id
-      if (!uniqueGuides.has(userId)) {
-        uniqueGuides.set(userId, {
-          // @ts-ignore
-          slug: service.public_links?.slug,
-          // @ts-ignore
-          name: service.users.name || 'Guía RutaLink',
-          // @ts-ignore
-          bio: service.users.bio,
-          // @ts-ignore
-          photo_url: service.users.photo_url,
-          // @ts-ignore
-          languages: service.users.languages,
-          // @ts-ignore
-          city: service.users.city,
-          // @ts-ignore
-          country: service.users.country,
-          // @ts-ignore
-          is_verified: service.users.is_verified,
-        })
+  services?.forEach((service: any) => {
+    if (service.user?.public_links?.[0]) {
+      const guide = {
+        slug: service.user.public_links[0].slug,
+        name: service.user.name || 'Guía RutaLink',
+        bio: service.user.bio,
+        photo_url: service.user.photo_url,
+        languages: service.user.languages,
+        city: service.user.city,
+        country: service.user.country,
+        is_verified: service.user.is_verified,
+      }
+      if (!uniqueGuidesMap.has(guide.slug)) {
+        uniqueGuidesMap.set(guide.slug, guide)
       }
     }
   })
 
-  const formattedGuides = Array.from(uniqueGuides.values())
+  const formattedGuides = Array.from(uniqueGuidesMap.values())
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
   const activityUrl = `${baseUrl}/actividad/${slug}`
