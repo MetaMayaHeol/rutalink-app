@@ -101,19 +101,15 @@ export default async function ActivityPage({ params }: { params: Promise<{ slug:
         active
       )
     `)
+    .contains('categories', [activity.name])
     .eq('public_links.active', true)
-    .limit(12)
+    .limit(50)
 
-  // Filter services by activity keywords and deduplicate by user
+  // Deduplicate by user
   const uniqueGuides = new Map()
   
   services?.forEach(service => {
-    const titleLower = service.title.toLowerCase()
-    const matchesActivity = activity.keywords.some(keyword => 
-      titleLower.includes(keyword.toLowerCase())
-    )
-    
-    if (matchesActivity && service.users) {
+    if (service.users) {
       const userId = service.user_id
       if (!uniqueGuides.has(userId)) {
         uniqueGuides.set(userId, {

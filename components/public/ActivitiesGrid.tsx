@@ -32,30 +32,22 @@ export async function ActivitiesGrid() {
   // Fetch service counts for all activities in parallel
   const activitiesWithCounts = await Promise.all(
     activities.map(async (activity) => {
-      // Count active services matching keywords
-      // Note: This is a simple keyword match. For production, consider a more robust tagging system.
-      let count = 0
-      
-      // Try to match any of the keywords
-      for (const keyword of activity.keywords) {
-        const { count: keywordCount } = await supabase
-          .from('services')
-          .select(`
-            id,
-            user:users!inner (
-              public_links!inner (
-                active
-              )
+      // Count active services with this category
+      const { count } = await supabase
+        .from('services')
+        .select(`
+          id,
+          user:users!inner (
+            public_links!inner (
+              active
             )
-          `, { count: 'exact', head: true })
-          .ilike('title', `%${keyword}%`)
-          .eq('active', true)
-          .eq('user.public_links.active', true)
-        
-        if (keywordCount) count += keywordCount
-      }
+          )
+        `, { count: 'exact', head: true })
+        .contains('categories', [activity.name])
+        .eq('active', true)
+        .eq('user.public_links.active', true)
       
-      return { ...activity, serviceCount: count }
+      return { ...activity, serviceCount: count || 0 }
     })
   )
 

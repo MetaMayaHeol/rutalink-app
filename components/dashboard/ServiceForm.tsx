@@ -16,6 +16,7 @@ import { toast } from 'sonner'
 import { LoadingButton } from '@/components/ui/LoadingButton'
 import { useRouter } from 'next/navigation'
 import { cities } from '@/lib/seo/cities'
+import { activities } from '@/lib/seo/activities'
 
 interface ServiceFormProps {
   initialData?: ServiceFormValues
@@ -35,6 +36,7 @@ export function ServiceForm({ initialData, serviceId, userId }: ServiceFormProps
     active: true,
     photos: [],
     locations: [],
+    categories: [],
   }
 
   const form = useForm<ServiceFormValues>({
@@ -104,6 +106,23 @@ export function ServiceForm({ initialData, serviceId, userId }: ServiceFormProps
         )}
         <p className="text-xs text-gray-500">
           Selecciona todas las ciudades donde realizas este tour
+        </p>
+      </div>
+
+      {/* Categories */}
+      <div className="space-y-2">
+        <Label htmlFor="categories">Categorías</Label>
+        <MultiSelect
+          options={activities.map(a => ({ label: a.name, value: a.name }))}
+          selected={form.watch('categories') || []}
+          onChange={(selected) => form.setValue('categories', selected)}
+          placeholder="Selecciona las categorías..."
+        />
+        {form.formState.errors.categories && (
+          <p className="text-sm text-red-500">{form.formState.errors.categories.message}</p>
+        )}
+        <p className="text-xs text-gray-500">
+          Selecciona el tipo de actividad (ej: Gastronomía, Cultura)
         </p>
       </div>
 

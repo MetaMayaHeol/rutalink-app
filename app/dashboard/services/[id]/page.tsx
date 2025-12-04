@@ -69,6 +69,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
             active: service.active,
             photos: photoUrls,
             locations: service.locations || [],
+            categories: service.categories || [],
           }}
         />
       </div>
