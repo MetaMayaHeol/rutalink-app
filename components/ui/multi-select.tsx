@@ -75,8 +75,11 @@ export function MultiSelect({
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value}
-                  onSelect={() => handleSelect(option.value)}
+                  value={option.label} // Use label for search matching
+                  onSelect={() => {
+                    handleSelect(option.value)
+                    setOpen(true) // Keep open for multiple selection
+                  }}
                 >
                   <div
                     className={cn(

@@ -33,15 +33,14 @@ export async function DestinationsGrid() {
   )
 
   // Filter cities with at least 1 guide and sort by count (descending)
-  const activeCities = citiesWithCounts
+  const displayCities = citiesWithCounts
     .filter(c => c.guideCount > 0)
     .sort((a, b) => b.guideCount - a.guideCount)
     .slice(0, 8)
 
-  // If no cities have guides yet (e.g. fresh install), show top 4 by default but with 0 count
-  const displayCities = activeCities.length > 0 
-    ? activeCities 
-    : cities.slice(0, 4).map(c => ({ ...c, guideCount: 0 }))
+  if (displayCities.length === 0) {
+    return null
+  }
 
   return (
     <section className="py-16 bg-white">

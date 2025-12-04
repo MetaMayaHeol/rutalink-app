@@ -60,15 +60,14 @@ export async function ActivitiesGrid() {
   )
 
   // Filter activities with at least 1 service and sort by count
-  const activeActivities = activitiesWithCounts
+  const displayActivities = activitiesWithCounts
     .filter(a => a.serviceCount > 0)
     .sort((a, b) => b.serviceCount - a.serviceCount)
     .slice(0, 8)
 
-  // Fallback if no activities found
-  const displayActivities = activeActivities.length > 0
-    ? activeActivities
-    : activities.slice(0, 4).map(a => ({ ...a, serviceCount: 0 }))
+  if (displayActivities.length === 0) {
+    return null
+  }
 
   return (
     <section className="py-16 bg-gray-50">
