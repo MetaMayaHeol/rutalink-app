@@ -28,7 +28,7 @@ export async function createService(formData: ServiceFormValues) {
     return { error: 'Datos inválidos' }
   }
 
-  const { title, description, price, duration, active, photos } = validatedFields.data
+  const { title, description, price, duration, active, photos, locations } = validatedFields.data
 
   // 1. Create service
   const { data: service, error: serviceError } = await supabase
@@ -40,6 +40,7 @@ export async function createService(formData: ServiceFormValues) {
       price,
       duration,
       active,
+      locations,
     })
     .select()
     .single()
@@ -89,7 +90,7 @@ export async function updateService(serviceId: string, formData: ServiceFormValu
     return { error: 'Datos inválidos' }
   }
 
-  const { title, description, price, duration, active, photos } = validatedFields.data
+  const { title, description, price, duration, active, photos, locations } = validatedFields.data
 
   // 1. Update service
   const { error: serviceError } = await supabase
@@ -100,6 +101,7 @@ export async function updateService(serviceId: string, formData: ServiceFormValu
       price,
       duration,
       active,
+      locations,
     })
     .eq('id', serviceId)
     .eq('user_id', user.id) // Security check
