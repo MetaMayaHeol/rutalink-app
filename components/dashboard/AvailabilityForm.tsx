@@ -2,27 +2,43 @@
 
 import { useState } from 'react'
 import { saveAvailability, type AvailabilityData } from '@/app/actions/availability'
-import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
 import { LoadingButton } from '@/components/ui/LoadingButton'
-import { WEEKDAYS, DEFAULT_TIME_SLOTS } from '@/lib/utils/constants'
+import { useTranslations } from 'next-intl'
 
 interface AvailabilityFormProps {
   initialWeekdays: { weekday: number; active: boolean }[]
   initialTimeslots: { time: string; active: boolean }[]
 }
 
+const DEFAULT_TIME_SLOTS = [
+  '08:00', '09:00', '10:00', '11:00', '12:00',
+  '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'
+]
+
 export function AvailabilityForm({ initialWeekdays, initialTimeslots }: AvailabilityFormProps) {
+  const t = useTranslations('availabilityForm')
   const [loading, setLoading] = useState(false)
+  
+  const weekdayNames = [
+    t('monday'),
+    t('tuesday'),
+    t('wednesday'),
+    t('thursday'),
+    t('friday'),
+    t('saturday'),
+    t('sunday'),
+  ]
   
   // Initialize state merging defaults with initial data
   const [weekdays, setWeekdays] = useState(() => {
-    return WEEKDAYS.map((day) => {
-      const saved = initialWeekdays.find((d) => d.weekday === day.id)
+    return weekdayNames.map((name, index) => {
+      const dayId = index + 1
+      const saved = initialWeekdays.find((d) => d.weekday === dayId)
       return {
-        weekday: day.id,
-        name: day.name,
+        weekday: dayId,
+        name: name,
         active: saved ? saved.active : true, // Default to true if not set
       }
     })
@@ -64,10 +80,10 @@ export function AvailabilityForm({ initialWeekdays, initialTimeslots }: Availabi
       if (result.error) {
         toast.error(result.error)
       } else {
-        toast.success('Disponibilidad guardada')
+        toast.success(t('availabilitySaved'))
       }
     } catch (error) {
-      toast.error('Ocurrió un error inesperado')
+      toast.error(t('unexpectedError'))
     } finally {
       setLoading(false)
     }
@@ -77,7 +93,7 @@ export function AvailabilityForm({ initialWeekdays, initialTimeslots }: Availabi
     <form onSubmit={onSubmit} className="space-y-8">
       {/* Weekdays */}
       <div className="space-y-4">
-        <h3 className="font-medium text-gray-900">Días disponibles</h3>
+        <h3 className="font-medium text-gray-900">{t('availableDays')}</h3>
         <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
           {weekdays.map((day, index) => (
             <div key={day.weekday} className="flex items-center justify-between p-4">
@@ -93,9 +109,9 @@ export function AvailabilityForm({ initialWeekdays, initialTimeslots }: Availabi
 
       {/* Time Slots */}
       <div className="space-y-4">
-        <h3 className="font-medium text-gray-900">Horarios disponibles</h3>
+        <h3 className="font-medium text-gray-900">{t('availableHours')}</h3>
         <p className="text-sm text-gray-500">
-          Selecciona los horarios en los que ofreces tus servicios.
+          {t('hoursDesc')}
         </p>
         <div className="grid grid-cols-2 gap-3">
           {timeslots.map((slot, index) => (
@@ -119,9 +135,9 @@ export function AvailabilityForm({ initialWeekdays, initialTimeslots }: Availabi
         type="submit" 
         className="w-full bg-green-500 hover:bg-green-600 font-bold h-12"
         loading={loading}
-        loadingText="Guardando..."
+        loadingText={t('saving')}
       >
-        Guardar disponibilidad
+        {t('saveAvailability')}
       </LoadingButton>
     </form>
   )

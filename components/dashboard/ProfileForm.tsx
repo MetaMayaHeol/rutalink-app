@@ -12,6 +12,7 @@ import { ImageUploader } from '@/components/dashboard/ImageUploader'
 import { toast } from 'sonner'
 import { LoadingButton } from '@/components/ui/LoadingButton'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 interface ProfileFormProps {
   initialData: ProfileFormValues
@@ -19,6 +20,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ initialData, userId }: ProfileFormProps) {
+  const t = useTranslations('profileForm')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
@@ -35,14 +37,25 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
       if (result.error) {
         toast.error(result.error)
       } else {
-        toast.success('Perfil actualizado correctamente')
+        toast.success(t('profileUpdated'))
         router.refresh()
       }
     } catch (error) {
-      toast.error('Ocurrió un error inesperado')
+      toast.error(t('unexpectedError'))
     } finally {
       setLoading(false)
     }
+  }
+
+  const languageNames: Record<string, string> = {
+    es: 'Español',
+    en: 'English',
+    fr: 'Français',
+    pt: 'Português',
+    de: 'Deutsch',
+    it: 'Italiano',
+    zh: '中文',
+    ja: '日本語'
   }
 
   return (
@@ -57,10 +70,10 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
 
       {/* Name */}
       <div className="space-y-2">
-        <Label htmlFor="name">Nombre completo</Label>
+        <Label htmlFor="name">{t('fullName')}</Label>
         <Input
           id="name"
-          placeholder="Tu nombre"
+          placeholder={t('namePlaceholder')}
           {...form.register('name')}
         />
         {form.formState.errors.name && (
@@ -71,10 +84,10 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
       {/* Location */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="city">Ciudad</Label>
+          <Label htmlFor="city">{t('city')}</Label>
           <Input
             id="city"
-            placeholder="Ej: Tulum"
+            placeholder={t('cityPlaceholder')}
             {...form.register('city')}
           />
           {form.formState.errors.city && (
@@ -82,7 +95,7 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
           )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="country">País</Label>
+          <Label htmlFor="country">{t('country')}</Label>
           <Input
             id="country"
             defaultValue="México"
@@ -96,10 +109,10 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
 
       {/* Bio */}
       <div className="space-y-2">
-        <Label htmlFor="bio">Biografía</Label>
+        <Label htmlFor="bio">{t('bio')}</Label>
         <Textarea
           id="bio"
-          placeholder="Cuéntanos sobre ti..."
+          placeholder={t('bioPlaceholder')}
           rows={4}
           {...form.register('bio')}
         />
@@ -110,11 +123,11 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
 
       {/* WhatsApp */}
       <div className="space-y-2">
-        <Label htmlFor="whatsapp">WhatsApp</Label>
+        <Label htmlFor="whatsapp">{t('whatsapp')}</Label>
         <Input
           id="whatsapp"
           type="tel"
-          placeholder="+521234567890"
+          placeholder={t('whatsappPlaceholder')}
           {...form.register('whatsapp')}
         />
         {form.formState.errors.whatsapp && (
@@ -124,21 +137,10 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
 
       {/* Languages */}
       <div className="space-y-2">
-        <Label>Idiomas que hablas</Label>
-        <p className="text-sm text-gray-500 mb-3">Selecciona todos los idiomas en los que puedes guiar</p>
+        <Label>{t('languages')}</Label>
+        <p className="text-sm text-gray-500 mb-3">{t('languagesDesc')}</p>
         <div className="grid grid-cols-2 gap-3">
           {(['es', 'en', 'fr', 'pt', 'de', 'it', 'zh', 'ja'] as const).map((lang) => {
-            const languageNames = {
-              es: 'Español',
-              en: 'English',
-              fr: 'Français',
-              pt: 'Português',
-              de: 'Deutsch',
-              it: 'Italiano',
-              zh: '中文',
-              ja: '日本語'
-            }
-            
             const currentLanguages = form.watch('languages') || []
             const isChecked = currentLanguages.includes(lang)
             
@@ -178,9 +180,9 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
         type="submit" 
         className="w-full bg-green-500 hover:bg-green-600 text-white font-bold h-12"
         loading={loading}
-        loadingText="Guardando..."
+        loadingText={t('saving')}
       >
-        Guardar cambios
+        {t('saveChanges')}
       </LoadingButton>
     </form>
   )
