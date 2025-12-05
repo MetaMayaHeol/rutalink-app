@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { ServiceForm } from '@/components/dashboard/ServiceForm'
 import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { deleteService } from '@/app/dashboard/services/actions'
+import { deleteService } from '@/app/actions/services'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 
 interface EditServicePageProps {

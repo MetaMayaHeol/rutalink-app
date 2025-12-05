@@ -1,7 +1,7 @@
 import { isAdmin } from '@/lib/auth/admin'
 import { getPendingReviews, getAllReviews } from '@/app/actions/admin-reviews'
 import { redirect } from 'next/navigation'
-import { ReviewsClient } from '@/app/dashboard/admin/reviews/ReviewsClient'
+import { ReviewsClient } from './ReviewsClient'
 
 export default async function AdminReviewsPage() {
   // Check if user is admin

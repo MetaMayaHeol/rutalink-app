@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { saveAvailability, type AvailabilityData } from '@/app/dashboard/availability/actions'
+import { saveAvailability, type AvailabilityData } from '@/app/actions/availability'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
