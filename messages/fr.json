@@ -283,5 +283,27 @@
     "updated": "Service mis à jour avec succès",
     "deleted": "Service supprimé avec succès",
     "unexpectedError": "Une erreur inattendue s'est produite"
+  },
+  "cityPage": {
+    "metaTitle": "Guides Touristiques à {city} | RutaLink",
+    "notFound": "Ville non trouvée",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbExplore": "Explorer",
+    "localGuides": "Guides Locaux à {city}",
+    "localGuidesDesc": "Connectez-vous avec des experts locaux qui connaissent chaque recoin de {city}",
+    "viewAllGuides": "Voir tous les guides",
+    "noGuidesYet": "Nous n'avons pas encore de guides inscrits à {city}",
+    "registerAsGuide": "Inscrivez-vous comme Guide",
+    "whyVisit": "Pourquoi visiter {city} ?",
+    "withRutaLink": "Avec RutaLink, vous pouvez vous connecter directement avec des guides locaux vérifiés qui vous montreront le meilleur de {city}.",
+    "featuredExperiences": "Expériences en vedette",
+    "discoverWith": "Découvrez {highlight} avec un expert local",
+    "toursAndActivities": "Tours et activités à {city}",
+    "toursDesc": "Nos guides à {city} offrent une grande variété d'expériences : tours gastronomiques, circuits culturels, aventures dans la nature, visites archéologiques et bien plus encore. Contactez directement via WhatsApp pour personnaliser votre expérience.",
+    "faqTitle": "Questions fréquentes sur {city}",
+    "popularActivities": "Activités populaires dans la Péninsule du Yucatán",
+    "areYouGuide": "Êtes-vous guide touristique à {city} ?",
+    "joinRutaLink": "Rejoignez RutaLink et connectez-vous avec des voyageurs à la recherche d'expériences authentiques",
+    "createProfileFree": "Créer mon profil gratuitement"
   }
 }

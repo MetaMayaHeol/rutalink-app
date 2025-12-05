@@ -283,5 +283,27 @@
     "updated": "Servicio actualizado correctamente",
     "deleted": "Servicio eliminado correctamente",
     "unexpectedError": "Ocurrió un error inesperado"
+  },
+  "cityPage": {
+    "metaTitle": "Guías Turísticos en {city} | RutaLink",
+    "notFound": "Ciudad no encontrada",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbExplore": "Explorar",
+    "localGuides": "Guías Locales en {city}",
+    "localGuidesDesc": "Conecta con expertos locales que conocen cada rincón de {city}",
+    "viewAllGuides": "Ver todos los guías",
+    "noGuidesYet": "Aún no tenemos guías registrados en {city}",
+    "registerAsGuide": "Regístrate como Guía",
+    "whyVisit": "¿Por qué visitar {city}?",
+    "withRutaLink": "Con RutaLink, puedes conectar directamente con guías locales verificados que te mostrarán lo mejor de {city}.",
+    "featuredExperiences": "Experiencias destacadas",
+    "discoverWith": "Descubre {highlight} con un experto local",
+    "toursAndActivities": "Tours y actividades en {city}",
+    "toursDesc": "Nuestros guías en {city} ofrecen una amplia variedad de experiencias: tours gastronómicos, recorridos culturales, aventuras en la naturaleza, visitas arqueológicas y mucho más. Contacta directamente por WhatsApp para personalizar tu experiencia.",
+    "faqTitle": "Preguntas frecuentes sobre {city}",
+    "popularActivities": "Actividades populares en la Península de Yucatán",
+    "areYouGuide": "¿Eres guía turístico en {city}?",
+    "joinRutaLink": "Únete a RutaLink y conecta con viajeros que buscan experiencias auténticas",
+    "createProfileFree": "Crear mi perfil gratis"
   }
 }

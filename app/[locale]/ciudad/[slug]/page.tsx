@@ -8,40 +8,56 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateTouristDestinationSchema, generateBreadcrumbSchema, generateFAQSchema } from '@/lib/seo/structured-data'
+import { generateCityFAQs } from '@/lib/seo/faq-generator'
+import { FAQSection } from '@/components/seo/FAQSection'
 
 export const revalidate = 60 // Revalidate every minute
 
+type Props = {
+  params: Promise<{ slug: string; locale: string }>
+}
 
-// Generate static params for all cities
+// Generate static params for all cities and locales
 export async function generateStaticParams() {
-  return cities.map((city) => ({
-    slug: city.slug,
-  }))
+  const locales = ['es', 'fr']
+  const params: { slug: string; locale: string }[] = []
+  
+  for (const locale of locales) {
+    for (const city of cities) {
+      params.push({ slug: city.slug, locale })
+    }
+  }
+  
+  return params
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale } = await params
   const city = getCityBySlug(slug)
+  const t = await getTranslations({ locale, namespace: 'cityPage' })
 
   if (!city) {
     return {
-      title: 'Ciudad no encontrada',
+      title: t('notFound'),
     }
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
 
   return {
-    title: `Guías Turísticos en ${city.name} | RutaLink`,
+    title: t('metaTitle', { city: city.name }),
     description: city.metaDescription,
     keywords: [...city.highlights, city.name, city.state, 'guías turísticos', 'tours'],
     openGraph: {
-      title: `Guías Turísticos en ${city.name}, ${city.state}`,
+      title: t('metaTitle', { city: city.name }),
       description: city.metaDescription,
-      url: `${baseUrl}/ciudad/${slug}`,
+      url: `${baseUrl}/${locale}/ciudad/${slug}`,
       siteName: 'RutaLink',
-      locale: 'es_MX',
+      locale: locale === 'fr' ? 'fr_FR' : 'es_MX',
       type: 'website',
       images: city.heroImage ? [
         {
@@ -54,40 +70,33 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Guías en ${city.name}`,
+      title: t('localGuides', { city: city.name }),
       description: city.metaDescription,
     },
     alternates: {
-      canonical: `${baseUrl}/ciudad/${slug}`,
+      canonical: `${baseUrl}/${locale}/ciudad/${slug}`,
     },
   }
 }
 
-import { JsonLd } from '@/components/seo/JsonLd'
-import { generateTouristDestinationSchema, generateBreadcrumbSchema, generateFAQSchema } from '@/lib/seo/structured-data'
-import { generateCityFAQs } from '@/lib/seo/faq-generator'
-import { FAQSection } from '@/components/seo/FAQSection'
-
-export default async function CityPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+export default async function CityPage({ params }: Props) {
+  const { slug, locale } = await params
+  setRequestLocale(locale)
+  
   const city = getCityBySlug(slug)
+  const t = await getTranslations('cityPage')
 
   if (!city) {
     notFound()
   }
 
-  if (!city) {
-    notFound()
-  }
-
-  // Fetch guides for this city
   // Fetch guides who have active services in this city
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   const supabase = createClient(supabaseUrl, supabaseKey)
 
   // Query services that include this city in their locations
-  const { data: services, error } = await supabase
+  const { data: services } = await supabase
     .from('services')
     .select(`
       user:users!inner (
@@ -109,7 +118,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
     .eq('user.public_links.active', true)
     .limit(50)
 
-  // Deduplicate guides (a guide might have multiple services in the same city)
+  // Deduplicate guides
   const uniqueGuidesMap = new Map()
   
   services?.forEach((service: any) => {
@@ -133,7 +142,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
   const formattedGuides = Array.from(uniqueGuidesMap.values())
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
-  const cityUrl = `${baseUrl}/ciudad/${slug}`
+  const cityUrl = `${baseUrl}/${locale}/ciudad/${slug}`
 
   // Generate FAQs
   const faqs = generateCityFAQs(city.name)
@@ -153,8 +162,8 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
   })
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: 'Inicio', url: baseUrl },
-    { name: 'Explorar', url: `${baseUrl}/explorar` },
+    { name: t('breadcrumbHome'), url: `${baseUrl}/${locale}` },
+    { name: t('breadcrumbExplore'), url: `${baseUrl}/${locale}/explorar` },
     { name: city.name, url: cityUrl }
   ])
 
@@ -163,7 +172,7 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
       <JsonLd data={destinationSchema} />
       <JsonLd data={breadcrumbSchema} />
       <JsonLd data={faqSchema} />
-      {/* Hero Section */}
+      
       {/* Hero Section */}
       <CityHero 
         city={city} 
@@ -175,9 +184,9 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="container mx-auto px-5 py-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-green-600">Inicio</Link>
+            <Link href={`/${locale}`} className="hover:text-green-600">{t('breadcrumbHome')}</Link>
             <span>/</span>
-            <Link href="/explorar" className="hover:text-green-600">Explorar</Link>
+            <Link href={`/${locale}/explorar`} className="hover:text-green-600">{t('breadcrumbExplore')}</Link>
             <span>/</span>
             <span className="text-gray-900 font-medium">{city.name}</span>
           </div>
@@ -189,10 +198,10 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
         <div className="container mx-auto px-5">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Guías Locales en {city.name}
+              {t('localGuides', { city: city.name })}
             </h2>
             <p className="text-xl text-gray-600">
-              Conecta con expertos locales que conocen cada rincón de {city.name}
+              {t('localGuidesDesc', { city: city.name })}
             </p>
           </div>
 
@@ -205,9 +214,9 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
               </div>
 
               <div className="text-center">
-                <Link href="/explorar">
+                <Link href={`/${locale}/explorar`}>
                   <Button variant="outline" className="gap-2">
-                    Ver todos los guías
+                    {t('viewAllGuides')}
                     <ArrowRight size={20} />
                   </Button>
                 </Link>
@@ -216,11 +225,11 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
           ) : (
             <div className="text-center py-16 bg-gray-50 rounded-xl">
               <p className="text-gray-600 mb-4">
-                Aún no tenemos guías registrados en {city.name}
+                {t('noGuidesYet', { city: city.name })}
               </p>
-              <Link href="/auth/login">
+              <Link href={`/${locale}/auth/login`}>
                 <Button className="bg-green-600 hover:bg-green-700">
-                  Regístrate como Guía
+                  {t('registerAsGuide')}
                 </Button>
               </Link>
             </div>
@@ -232,44 +241,40 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
       <div className="bg-gray-50 py-16">
         <div className="container mx-auto px-5">
           <div className="max-w-3xl mx-auto prose prose-lg">
-            <h2>¿Por qué visitar {city.name}?</h2>
+            <h2>{t('whyVisit', { city: city.name })}</h2>
             <p className="text-gray-700 leading-relaxed">
-              {city.description} Con RutaLink, puedes conectar directamente con guías 
-              locales verificados que te mostrarán lo mejor de {city.name}.
+              {city.description} {t('withRutaLink', { city: city.name })}
             </p>
 
-            <h3>Experiencias destacadas</h3>
+            <h3>{t('featuredExperiences')}</h3>
             <ul>
               {city.highlights.map((highlight, index) => (
-                <li key={index}><strong>{highlight}</strong>: Descubre {highlight.toLowerCase()} con un experto local</li>
+                <li key={index}><strong>{highlight}</strong>: {t('discoverWith', { highlight: highlight.toLowerCase() })}</li>
               ))}
             </ul>
 
-            <h3>Tours y actividades en {city.name}</h3>
+            <h3>{t('toursAndActivities', { city: city.name })}</h3>
             <p className="text-gray-700 leading-relaxed">
-              Nuestros guías en {city.name} ofrecen una amplia variedad de experiencias: 
-              tours gastronómicos, recorridos culturales, aventuras en la naturaleza, 
-              visitas arqueológicas y mucho más. Contacta directamente por WhatsApp 
-              para personalizar tu experiencia.
+              {t('toursDesc', { city: city.name })}
             </p>
           </div>
         </div>
       </div>
 
       {/* FAQ Section */}
-      <FAQSection title={`Preguntas frecuentes sobre ${city.name}`} faqs={faqs} />
+      <FAQSection title={t('faqTitle', { city: city.name })} faqs={faqs} />
 
       {/* Popular Activities Internal Linking */}
       <div className="py-16 border-t border-gray-100">
         <div className="container mx-auto px-5">
           <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-            Actividades populares en la Península de Yucatán
+            {t('popularActivities')}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {activities.map((activity) => (
               <Link 
                 key={activity.slug} 
-                href={`/actividad/${activity.slug}`}
+                href={`/${locale}/actividad/${activity.slug}`}
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-green-50 transition-colors border border-gray-100 hover:border-green-200"
               >
                 <h3 className="font-medium text-gray-900 group-hover:text-green-700 text-center">
@@ -285,14 +290,14 @@ export default async function CityPage({ params }: { params: Promise<{ slug: str
       <div className="bg-gray-900 text-white py-16">
         <div className="container mx-auto px-5 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            ¿Eres guía turístico en {city.name}?
+            {t('areYouGuide', { city: city.name })}
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Únete a RutaLink y conecta con viajeros que buscan experiencias auténticas
+            {t('joinRutaLink')}
           </p>
-          <Link href="/auth/login">
+          <Link href={`/${locale}/auth/login`}>
             <Button className="bg-green-500 hover:bg-green-600 text-white font-bold h-14 px-8 text-lg rounded-full">
-              Crear mi perfil gratis
+              {t('createProfileFree')}
             </Button>
           </Link>
         </div>
