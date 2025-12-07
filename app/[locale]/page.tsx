@@ -307,8 +307,8 @@ export default async function HomePage({ params }: Props) {
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <Mail size={16} className="text-green-500" />
-                <a href="mailto:support@rutalink.com" className="text-gray-400 hover:text-green-400">
-                  support@rutalink.com
+                <a href="mailto:metamayaheol@gmail.com" className="text-gray-400 hover:text-green-400">
+                  metamayaheol@gmail.com
                 </a>
               </div>
             </div>
