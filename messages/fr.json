@@ -465,5 +465,45 @@
       "metaDescription": "Tours de pêche et nature à Isla Aguada. Flamants et tradition de pêche authentique.",
       "highlights": "Flamants|Pêche Sportive|Plages Vierges|Lagune de Terminos"
     }
+  },
+  "activityFaq": {
+    "bestPlaces": "Quels sont les meilleurs endroits pour {activity} au Yucatán ?",
+    "bestPlacesAnswer": "La péninsule du Yucatán offre des paysages incroyables pour {activity}. Selon votre niveau d'expérience, un guide local peut vous recommander les sites les plus appropriés et les moins fréquentés.",
+    "needExperience": "Ai-je besoin d'une expérience préalable pour faire des tours de {activity} ?",
+    "needExperienceAnswer": "La plupart des tours de {activity} s'adaptent à différents niveaux, des débutants aux experts. Il est important de communiquer votre expérience à votre guide afin qu'il puisse adapter l'activité.",
+    "whatToBring": "Que dois-je apporter pour un tour de {activity} ?",
+    "whatToBringAnswer": "Pour {activity}, vous aurez généralement besoin de vêtements confortables, d'une protection solaire biodégradable et d'eau. Votre guide vous fournira une liste précise de l'équipement nécessaire lors de la réservation.",
+    "isSafe": "Est-il sûr de pratiquer {activity} dans la région ?",
+    "isSafeAnswer": "Oui, à condition de le faire avec des guides certifiés qui connaissent le terrain et les conditions locales. Chez RutaLink, nous vérifions nos guides pour votre sécurité.",
+    "cost": "Combien coûte un tour de {activity} ?",
+    "costAnswer": "Les prix pour {activity} varient en fonction de la durée, de l'équipement inclus et s'il s'agit d'un tour privé ou en groupe. Contactez directement les guides sur RutaLink pour obtenir des devis personnalisés."
+  },
+  "activityPage": {
+    "heroTitle": "Tours de",
+    "authenticExperiences": "Expériences Authentiques",
+    "specializedGuides": "Guides Spécialisés",
+    "availableDestinations": "Destinations Disponibles",
+    "metaTitle": "Tours de {activity} au Yucatán | RutaLink",
+    "notFound": "Activité non trouvée",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbExplore": "Explorer",
+    "guidesSpecializedIn": "Guides Spécialisés en {activity}",
+    "connectWithExperts": "Connectez-vous avec des experts offrant des expériences authentiques de {activity}",
+    "viewAllGuides": "Voir tous les guides",
+    "comingSoon": "Prochainement, nous aurons des guides spécialisés en {activity}",
+    "registerAsGuide": "Inscrivez-vous comme Guide",
+    "seoTitle": "Tours de {activity} dans la Péninsule du Yucatán",
+    "seoDesc": "{description} Nos guides locaux vous offrent des expériences personnalisées qui vont au-delà des tours traditionnels.",
+    "whatInclude": "Que comprennent nos tours de {activity} ?",
+    "whatIncludeDesc": "Expériences authentiques avec des experts locaux",
+    "whyChoose": "Pourquoi choisir RutaLink pour des tours de {activity} ?",
+    "whyChooseDesc": "Chez RutaLink, nous connectons les voyageurs avec des guides locaux vérifiés qui connaissent chaque recoin de la région. Communication directe par WhatsApp, sans commissions cachées, et la flexibilité de personnaliser votre expérience selon vos intérêts.",
+    "popularDestinations": "Destinations populaires pour {activity}",
+    "popularDestinationsDesc": "Nos guides proposent des tours de {activity} à Mérida, Valladolid, Tulum, Playa del Carmen, Bacalar, Campeche et bien d'autres destinations de la Péninsule du Yucatán.",
+    "faqTitle": "Questions fréquentes sur les tours de {activity}",
+    "bestDestinations": "Meilleures destinations pour {activity}",
+    "offerTours": "Proposez-vous des tours de {activity} ?",
+    "joinCta": "Rejoignez RutaLink et connectez-vous avec des voyageurs en quête d'expériences authentiques",
+    "createProfileCta": "Créer mon profil gratuitement"
   }
 }

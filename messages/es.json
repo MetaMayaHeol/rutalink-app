@@ -465,5 +465,45 @@
       "metaDescription": "Tours de pesca y naturaleza en Isla Aguada. Flamingos y tradición pesquera auténtica.",
       "highlights": "Flamingos|Pesca Deportiva|Playas Vírgenes|Laguna de Términos"
     }
+  },
+  "activityFaq": {
+    "bestPlaces": "¿Cuáles son los mejores lugares para {activity} en Yucatán?",
+    "bestPlacesAnswer": "La Península de Yucatán ofrece escenarios increíbles para {activity}. Dependiendo de tu nivel de experiencia, un guía local puede recomendarte los sitios más adecuados y menos concurridos.",
+    "needExperience": "¿Necesito experiencia previa para realizar tours de {activity}?",
+    "needExperienceAnswer": "La mayoría de los tours de {activity} se adaptan a diferentes niveles, desde principiantes hasta expertos. Es importante comunicar tu experiencia a tu guía para que ajuste la actividad.",
+    "whatToBring": "¿Qué debo llevar para un tour de {activity}?",
+    "whatToBringAnswer": "Para {activity}, generalmente necesitarás ropa cómoda, protección solar biodegradable y agua. Tu guía te proporcionará una lista específica de equipo necesario al reservar.",
+    "isSafe": "¿Es seguro realizar {activity} en la zona?",
+    "isSafeAnswer": "Sí, siempre y cuando lo hagas con guías certificados que conozcan el terreno y las condiciones locales. En RutaLink verificamos a nuestros guías para tu seguridad.",
+    "cost": "¿Cuánto cuesta un tour de {activity}?",
+    "costAnswer": "Los precios para {activity} varían según la duración, el equipo incluido y si es privado o grupal. Contacta directamente a los guías en RutaLink para obtener cotizaciones personalizadas."
+  },
+  "activityPage": {
+    "heroTitle": "Tours de",
+    "authenticExperiences": "Experiencias Auténticas",
+    "specializedGuides": "Guías Especializados",
+    "availableDestinations": "Destinos Disponibles",
+    "metaTitle": "Tours de {activity} en Yucatán | RutaLink",
+    "notFound": "Actividad no encontrada",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbExplore": "Explorar",
+    "guidesSpecializedIn": "Guías Especializados en {activity}",
+    "connectWithExperts": "Conecta con expertos que ofrecen experiencias auténticas de {activity}",
+    "viewAllGuides": "Ver todos los guías",
+    "comingSoon": "Próximamente tendremos guías especializados en {activity}",
+    "registerAsGuide": "Regístrate como Guía",
+    "seoTitle": "Tours de {activity} en la Península de Yucatán",
+    "seoDesc": "{description} Nuestros guías locales te ofrecen experiencias personalizadas que van más allá de los tours tradicionales.",
+    "whatInclude": "¿Qué incluyen nuestros tours de {activity}?",
+    "whatIncludeDesc": "Experiencias auténticas con expertos locales",
+    "whyChoose": "¿Por qué elegir RutaLink para tours de {activity}?",
+    "whyChooseDesc": "En RutaLink conectamos viajeros con guías locales verificados que conocen cada detalle de la región. Comunicación directa por WhatsApp, sin comisiones ocultas, y la flexibilidad de personalizar tu experiencia según tus intereses.",
+    "popularDestinations": "Destinos populares para {activity}",
+    "popularDestinationsDesc": "Nuestros guías ofrecen tours de {activity} en Mérida, Valladolid, Tulum, Playa del Carmen, Bacalar, Campeche y muchos otros destinos de la Península de Yucatán.",
+    "faqTitle": "Preguntas frecuentes sobre tours de {activity}",
+    "bestDestinations": "Mejores destinos para {activity}",
+    "offerTours": "¿Ofreces tours de {activity}?",
+    "joinCta": "Únete a RutaLink y conecta con viajeros que buscan experiencias auténticas",
+    "createProfileCta": "Crear mi perfil gratis"
   }
 }
