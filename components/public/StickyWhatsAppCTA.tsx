@@ -5,12 +5,23 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Send, Phone } from 'lucide-react'
 
+import { trackWhatsappClick } from '@/lib/actions/analytics'
+
 interface StickyWhatsAppCTAProps {
   phoneNumber: string
   guideName?: string
+  guideId: string
+  pageType?: 'profile' | 'service'
+  resourceId?: string
 }
 
-export function StickyWhatsAppCTA({ phoneNumber, guideName }: StickyWhatsAppCTAProps) {
+export function StickyWhatsAppCTA({ 
+  phoneNumber, 
+  guideName, 
+  guideId,
+  pageType = 'profile',
+  resourceId
+}: StickyWhatsAppCTAProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isPulsing, setIsPulsing] = useState(false)
 
@@ -54,6 +65,17 @@ export function StickyWhatsAppCTA({ phoneNumber, guideName }: StickyWhatsAppCTAP
   
   const whatsappUrl = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(message)}`
 
+  const handleClick = () => {
+    // Track click
+    trackWhatsappClick(pageType, guideId, resourceId)
+      .catch(err => console.error('Error tracking click:', err))
+
+    // Haptic feedback on mobile (if supported)
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50)
+    }
+  }
+
   return (
     <div 
       className={`fixed bottom-0 left-0 right-0 z-50 pointer-events-none transition-all duration-500 ${
@@ -71,12 +93,7 @@ export function StickyWhatsAppCTA({ phoneNumber, guideName }: StickyWhatsAppCTAP
             target="_blank"
             rel="noopener noreferrer"
             className="block"
-            onClick={() => {
-              // Haptic feedback on mobile (if supported)
-              if ('vibrate' in navigator) {
-                navigator.vibrate(50)
-              }
-            }}
+            onClick={handleClick}
           >
             <Button 
               className={`

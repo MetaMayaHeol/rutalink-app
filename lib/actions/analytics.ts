@@ -12,10 +12,10 @@ const supabaseAdmin = createClient(
 )
 
 /**
- * Tracks a page view for a guide profile or service
- * Uses a hash of IP + User Agent + Date to prevent duplicate counts per day
+ * Tracks a generic event (view, click, etc.)
  */
-export async function trackView(
+async function trackEvent(
+  eventType: 'view' | 'whatsapp_click',
   pageType: 'profile' | 'service',
   guideId: string,
   resourceId?: string
@@ -26,42 +26,66 @@ export async function trackView(
     const userAgent = headersList.get('user-agent') || 'unknown'
     const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
 
-    // Create a hash for deduplication (privacy friendly, no raw IP stored)
+    // Create a hash for deduplication
+    // For views: 1 per day per user per resource
+    // For clicks: 1 per day per user per resource (conservative lead counting)
     const viewerHash = crypto
       .createHash('sha256')
-      .update(`${ip}-${userAgent}-${today}-${pageType}-${resourceId || guideId}`)
+      .update(`${ip}-${userAgent}-${today}-${eventType}-${pageType}-${resourceId || guideId}`)
       .digest('hex')
 
-    // Check if view already exists for this hash
-    const { data: existingView } = await supabaseAdmin
+    // Check if event already exists for this hash
+    const { data: existingEvent } = await supabaseAdmin
       .from('analytics')
       .select('id')
       .eq('viewer_hash', viewerHash)
       .single()
 
-    if (existingView) {
-      // Already viewed today, don't count
+    if (existingEvent) {
       return { success: true, skipped: true }
     }
 
-    // Record new view
+    // Record new event
     const { error } = await supabaseAdmin.from('analytics').insert({
       user_id: guideId,
       page_type: pageType,
       resource_id: resourceId || null,
       viewer_hash: viewerHash,
+      event_type: eventType
     })
 
     if (error) {
-      console.error('Error tracking view:', error)
+      console.error('Error tracking event:', error)
       return { success: false, error: error.message }
     }
 
     return { success: true }
   } catch (error) {
-    console.error('Error in trackView:', error)
+    console.error('Error in trackEvent:', error)
     return { success: false, error: 'Internal error' }
   }
+}
+
+/**
+ * Tracks a page view
+ */
+export async function trackView(
+  pageType: 'profile' | 'service',
+  guideId: string,
+  resourceId?: string
+) {
+  return trackEvent('view', pageType, guideId, resourceId)
+}
+
+/**
+ * Tracks a WhatsApp click
+ */
+export async function trackWhatsappClick(
+  pageType: 'profile' | 'service',
+  guideId: string,
+  resourceId?: string
+) {
+  return trackEvent('whatsapp_click', pageType, guideId, resourceId)
 }
 
 /**

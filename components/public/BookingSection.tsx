@@ -10,24 +10,34 @@ import { generateWhatsAppLink, openWhatsApp } from '@/lib/whatsapp'
 import { CalendarIcon, Clock, Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { trackWhatsappClick } from '@/lib/actions/analytics'
+
 interface BookingSectionProps {
   serviceName: string
   whatsapp: string
   availableWeekdays: number[]
   availableTimeslots: string[]
+  guideId: string
+  serviceId: string
 }
 
 export function BookingSection({ 
   serviceName, 
   whatsapp, 
   availableWeekdays, 
-  availableTimeslots 
+  availableTimeslots,
+  guideId,
+  serviceId
 }: BookingSectionProps) {
   const [date, setDate] = useState<Date>()
   const [time, setTime] = useState<string>()
 
   const handleBooking = () => {
     if (!date || !time) return
+
+    // Track click
+    trackWhatsappClick('service', guideId, serviceId)
+      .catch(err => console.error('Error tracking booking click:', err))
 
     const formattedDate = format(date, 'd MMM yyyy', { locale: es })
     const link = generateWhatsAppLink(whatsapp, serviceName, formattedDate, time)

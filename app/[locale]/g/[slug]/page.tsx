@@ -343,6 +343,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
         <StickyWhatsAppCTA 
           phoneNumber={guide.whatsapp} 
           guideName={guide.name || undefined}
+          guideId={guide.id}
         />
       )}
     </div>

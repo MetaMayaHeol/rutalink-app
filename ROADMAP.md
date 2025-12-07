@@ -19,7 +19,7 @@ Ce document décrit la trajectoire du projet, en priorisant la finalisation du M
 - [ ] **Mobile** : Vérifier le responsive sur mobile (menu, cards, formulaires).
 
 ### 1.3 Fonctionnalités Core "En attente" ⚙️
-- [ ] **Analytics** : Finaliser le dashboard basique (Vues par jour, Clics WhatsApp).
+- [x] **Analytics** : Finaliser le dashboard basique (Vues par jour, Clics WhatsApp).
 - [ ] **Modération** : Activer le système d'approbation des avis (Reviews).
 
 ---

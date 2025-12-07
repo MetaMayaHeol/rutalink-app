@@ -210,6 +210,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
             whatsapp={guide.whatsapp}
             availableWeekdays={availableWeekdays}
             availableTimeslots={availableTimeslots}
+            guideId={guide.id}
+            serviceId={service.id}
           />
         ) : (
           <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-center">
