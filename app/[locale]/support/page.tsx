@@ -63,10 +63,10 @@ export default async function SupportPage({ params }: Props) {
                 {t('emailDesc')}
               </p>
               <a 
-                href="mailto:support@rutalink.com" 
+                href="mailto:metamayaheol@gmail.com" 
                 className="text-blue-600 font-semibold hover:underline text-lg"
               >
-                support@rutalink.com
+                metamayaheol@gmail.com
               </a>
               <div className="flex items-center gap-2 mt-4 text-sm text-gray-500">
                 <Clock size={16} />
@@ -84,7 +84,7 @@ export default async function SupportPage({ params }: Props) {
                 {t('whatsappDesc')}
               </p>
               <a 
-                href="https://wa.me/5215512345678" 
+                href="https://wa.me/529994112288" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-block"
