@@ -111,7 +111,7 @@ export async function ActivitiesGrid() {
                   {/* Hover indicator */}
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-xs font-semibold text-green-600">
-                      Découvrir →
+                      {t('discover')} →
                     </span>
                   </div>
                 </div>

@@ -79,14 +79,30 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const supabase = createStaticClient()
 
   // 1. Fetch service details
-  const { data: service } = await supabase
+  // We handle potential missing column error (if migration not run on prod)
+  let result = await supabase
     .from('services')
     .select('id, title, description, price, duration, user_id')
     .eq('id', serviceId)
     .is('deleted_at', null)
     .single()
 
-  if (!service) {
+  // Fallback: If 'deleted_at' column doesn't exist (Error 42703), try without filter
+  if (result.error && result.error.code === '42703') {
+    console.warn('Warning: deleted_at column missing, falling back to unsafe query')
+    result = await supabase
+      .from('services')
+      .select('id, title, description, price, duration, user_id')
+      .eq('id', serviceId)
+      .single()
+  }
+
+  const { data: service, error } = result
+
+  if (error || !service) {
+    if (error && error.code !== 'PGRST116') {
+        console.error('Service Fetch Error:', error)
+    }
     notFound()
   }
 

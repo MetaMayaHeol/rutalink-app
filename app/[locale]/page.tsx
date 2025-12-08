@@ -89,7 +89,7 @@ export default async function HomePage({ params }: Props) {
             fill
             className="object-cover"
             priority
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1920px"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-gray-900/90" />
@@ -307,9 +307,9 @@ export default async function HomePage({ params }: Props) {
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <Mail size={16} className="text-green-500" />
-                <a href="mailto:metamayaheol@gmail.com" className="text-gray-400 hover:text-green-400">
-                  metamayaheol@gmail.com
-                </a>
+                <Link href={`/${locale}/support`} className="text-gray-400 hover:text-green-400">
+                  {tFooter('contactUs')}
+                </Link>
               </div>
             </div>
             <div>
@@ -331,8 +331,8 @@ export default async function HomePage({ params }: Props) {
             <div>
               <h4 className="text-white font-bold mb-4">{tFooter('legal')}</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="hover:text-green-400 transition-colors">{tFooter('terms')}</Link></li>
-                <li><Link href="#" className="hover:text-green-400 transition-colors">{tFooter('privacy')}</Link></li>
+                <li><Link href={`/${locale}/terms`} className="hover:text-green-400 transition-colors">{tFooter('terms')}</Link></li>
+                <li><Link href={`/${locale}/privacy`} className="hover:text-green-400 transition-colors">{tFooter('privacy')}</Link></li>
                 <li><Link href="#" className="hover:text-green-400 transition-colors">{tFooter('cookies')}</Link></li>
               </ul>
             </div>
