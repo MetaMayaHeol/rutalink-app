@@ -32,7 +32,7 @@ npm install
 4. Copia las siguientes credenciales:
    - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
    - `anon/public key` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `service_role key` → `SUPABASE_SERVICE_ROLE_KEY`
+   - `anon/public key` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ### 3. Variables de Entorno
 
@@ -47,7 +47,7 @@ Edita `.env.local` con tus credenciales de Supabase:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key_aqui
-SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key_aqui
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key_aqui
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 

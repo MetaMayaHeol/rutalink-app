@@ -1,48 +1,27 @@
 'use client'
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useActionState } from 'react'
+import { signInWithEmail } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useEffect, useState } from 'react'
 
 export const dynamic = 'force-dynamic'
 
+const initialState = {
+  error: '',
+  success: false,
+  message: ''
+}
+
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const supabase = createClient()
+  const [state, action, isPending] = useActionState(signInWithEmail, initialState)
+  const [origin, setOrigin] = useState('')
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage(null)
-
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
-
-      if (error) throw error
-
-      setMessage({
-        type: 'success',
-        text: '¡Revisa tu email! Te hemos enviado un enlace mágico para iniciar sesión.',
-      })
-      setEmail('')
-    } catch (error: any) {
-      setMessage({
-        type: 'error',
-        text: error.message || 'Ocurrió un error. Por favor intenta de nuevo.',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-5">
@@ -55,40 +34,40 @@ export default function LoginPage() {
         <h1 className="text-3xl font-bold text-center mb-2">RutaLink</h1>
         <p className="text-center text-gray-600 mb-8">Crea tu página en 2 minutos</p>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form action={action} className="space-y-4">
+          <input type="hidden" name="origin" value={origin} />
           <div>
             <Label htmlFor="email" className="sr-only">
               Email
             </Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="tu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={loading}
+              disabled={isPending}
               className="h-12 text-base"
             />
           </div>
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={isPending}
             className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-bold"
           >
-            {loading ? 'Enviando...' : 'Recibir enlace mágico'}
+            {isPending ? 'Enviando...' : 'Recibir enlace mágico'}
           </Button>
 
-          {message && (
-            <div
-              className={`p-4 rounded-lg text-sm ${
-                message.type === 'success'
-                  ? 'bg-green-50 text-green-700 border border-green-200'
-                  : 'bg-red-50 text-red-700 border border-red-200'
-              }`}
-            >
-              {message.text}
+          {state?.error && (
+            <div className="p-4 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200">
+              {state.error}
+            </div>
+          )}
+
+          {state?.success && (
+            <div className="p-4 rounded-lg text-sm bg-green-50 text-green-700 border border-green-200">
+              {state.message}
             </div>
           )}
         </form>
