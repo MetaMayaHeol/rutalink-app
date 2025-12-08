@@ -4,38 +4,6 @@ import { getTranslations } from 'next-intl/server'
 interface Testimonial {
   name: string
   location: string
-  rating: number
-  quote: string
-  tourReference: string
-  avatarUrl?: string
-}
-
-const testimonials: Testimonial[] = [
-  {
-    name: 'Constanza García',
-    location: 'CDMX',
-    rating: 5,
-    quote: '¡Experiencia inolvidable! Ana nos mostró rincones de Mérida que jamás habríamos encontrado solos. Totalmente recomendado.',
-    tourReference: 'Tour Cultural en Mérida',
-  },
-  {
-    name: 'John Smith',
-    location: 'USA',
-    rating: 5,
-    quote: 'Amazing cenotes tour in Valladolid! Alejandro knows every hidden spot. Best experience in the Yucatan.',
-    tourReference: 'Cenotes Tour en Valladolid',
-  },
-  {
-    name: 'Roberto Silva',
-    location: 'Brasil',
-    rating: 5,
-    quote: 'Excelente plataforma para encontrar guías en Playa del Carmen. La comunicación directa por WhatsApp hace todo más fácil y personal.',
-    tourReference: 'Tour de Snorkel en Cozumel',
-  },
-  {
-    name: 'Sophie Dubois',
-    location: 'France',
-    rating: 5,
     quote: "J'ai adoré Bacalar! Le guide était passionné et très professionnel. Une expérience authentique dans la lagune.",
     tourReference: 'Tour en la Laguna de Bacalar',
   },
