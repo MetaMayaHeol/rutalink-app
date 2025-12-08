@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         'fr': '/fr',
       },
     },
+    manifest: '/manifest.json',
   }
 }
 

@@ -131,11 +131,18 @@ export function Header({ user }: { user?: User | null }) {
                  </Link>
                </div>
             ) : (
-               <Link href={`/${locale}/auth/login`}>
-                 <Button variant="default" className="bg-green-600 hover:bg-green-700 ml-4">
-                   {t('becomeGuide')}
-                 </Button>
-               </Link>
+               <div className="flex items-center gap-2 ml-4">
+                 <Link href={`/${locale}/auth/login`}>
+                   <Button variant="ghost" size="sm">
+                     Log In
+                   </Button>
+                 </Link>
+                 <Link href={`/${locale}/auth?view=signup&role=guide`}>
+                   <Button variant="default" className="bg-green-600 hover:bg-green-700">
+                     {t('becomeGuide')}
+                   </Button>
+                 </Link>
+               </div>
             )}
           </nav>
 
