@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { cities, getCityBySlug } from '@/lib/seo/cities'
 import { activities } from '@/lib/seo/activities'
 import { CityHero } from '@/components/seo/CityHero'
-import { GuideCard } from '@/components/directory/GuideCard'
+import { TourCard } from '@/components/directory/TourCard'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -106,22 +106,26 @@ export default async function CityPage({ params }: Props) {
   // Get activities translations
   const tActivities = await getTranslations('activities')
 
-  // Fetch guides who have active services in this city
+  // Fetch active tours in this city
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   const supabase = createClient(supabaseUrl, supabaseKey)
 
-  // Query services that include this city in their locations
   const { data: services } = await supabase
     .from('services')
     .select(`
+      id,
+      title,
+      description,
+      price,
+      duration,
+      service_photos (
+        url,
+        order
+      ),
       user:users!inner (
         name,
-        bio,
         photo_url,
-        languages,
-        city,
-        country,
         is_verified,
         public_links!inner (
           slug,
@@ -134,28 +138,21 @@ export default async function CityPage({ params }: Props) {
     .eq('user.public_links.active', true)
     .limit(50)
 
-  // Deduplicate guides
-  const uniqueGuidesMap = new Map()
-  
-  services?.forEach((service: any) => {
-    if (service.user?.public_links?.[0]) {
-      const guide = {
-        slug: service.user.public_links[0].slug,
-        name: service.user.name || 'Guía MySenda',
-        bio: service.user.bio,
-        photo_url: service.user.photo_url,
-        languages: service.user.languages,
-        city: service.user.city,
-        country: service.user.country,
-        is_verified: service.user.is_verified,
-      }
-      if (!uniqueGuidesMap.has(guide.slug)) {
-        uniqueGuidesMap.set(guide.slug, guide)
-      }
+  // Format tours for display
+  const tours = services?.map((service: any) => ({
+    id: service.id,
+    title: service.title,
+    description: service.description,
+    price: service.price,
+    duration: service.duration,
+    cover_image: service.service_photos?.sort((a: any, b: any) => a.order - b.order)[0]?.url || null,
+    guide: {
+      name: service.user.name || 'Guía MySenda',
+      photo_url: service.user.photo_url,
+      slug: service.user.public_links[0].slug,
+      is_verified: service.user.is_verified,
     }
-  })
-
-  const formattedGuides = Array.from(uniqueGuidesMap.values())
+  })) || []
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://mysenda.com'
   const cityUrl = `${baseUrl}/${locale}/ciudad/${slug}`
@@ -202,11 +199,11 @@ export default async function CityPage({ params }: Props) {
       {/* Hero Section */}
       <CityHero 
         city={{...city, name: cityName, description: cityDescription, highlights: cityHighlights}}
-        guideCount={formattedGuides.length}
+        guideCount={tours.length} // Repurposing guideCount for tour count visual
         activityCount={cityHighlights.length}
         translations={{
           heroTitle: t('heroTitle'),
-          localGuidesCount: t('localGuidesCount'),
+          localGuidesCount: t('localGuidesCount'), // Might need translation update
           tourTypesCount: t('tourTypesCount'),
         }}
       />
@@ -224,23 +221,27 @@ export default async function CityPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Guides Section */}
+      {/* Tours Section */}
       <div className="py-16">
         <div className="container mx-auto px-5">
-          <div className="mb-12">
+          <div className="mb-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {t('localGuides', { city: cityName })}
+              {t('localGuides', { city: cityName })} 
+              {/* Consider updating translation key to something like 'availableTours' */}
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               {t('localGuidesDesc', { city: cityName })}
             </p>
           </div>
 
-          {formattedGuides.length > 0 ? (
+          {tours.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                {formattedGuides.map((guide) => (
-                  <GuideCard key={guide.slug} guide={guide} />
+              <div className="flex flex-wrap justify-center gap-8 mb-12">
+                {tours.map((tour: any) => (
+                  <div key={tour.id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] max-w-md h-full">
+                     {/* @ts-ignore */}
+                     <TourCard tour={tour} />
+                  </div>
                 ))}
               </div>
 
