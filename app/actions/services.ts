@@ -29,7 +29,10 @@ export async function createService(formData: ServiceFormValues) {
     return { error: 'Datos inválidos' }
   }
 
-  const { title, description, price, duration, active, photos, locations, categories } = validatedFields.data
+  const { 
+    title, subtitle, description, price, duration, active, photos, locations, categories,
+    itinerary, includes, excludes, requirements, meeting_point, cancellation_policy, max_pax, languages
+  } = validatedFields.data
 
   // 1. Create service
   const { data: service, error: serviceError } = await supabase
@@ -37,12 +40,21 @@ export async function createService(formData: ServiceFormValues) {
     .insert({
       user_id: user.id,
       title,
+      subtitle,
       description,
       price,
       duration,
       active,
       locations,
       categories,
+      itinerary,
+      includes,
+      excludes,
+      requirements,
+      meeting_point,
+      cancellation_policy,
+      max_pax,
+      languages,
     })
     .select()
     .single()
@@ -64,7 +76,6 @@ export async function createService(formData: ServiceFormValues) {
       .insert(photosToInsert)
 
     if (photosError) {
-      // Non-critical error, but good to know
       console.error('Error uploading photos:', photosError)
     }
   }
@@ -95,25 +106,38 @@ export async function updateService(serviceId: string, formData: ServiceFormValu
     return { error: 'Datos inválidos' }
   }
 
-  const { title, description, price, duration, active, photos, locations, categories } = validatedFields.data
+  const { 
+    title, subtitle, description, price, duration, active, photos, locations, categories,
+    itinerary, includes, excludes, requirements, meeting_point, cancellation_policy, max_pax, languages
+  } = validatedFields.data
 
   // 1. Update service
   const { error: serviceError } = await supabase
     .from('services')
     .update({
       title,
+      subtitle,
       description,
       price,
       duration,
       active,
       locations,
       categories,
+      itinerary,
+      includes,
+      excludes,
+      requirements,
+      meeting_point,
+      cancellation_policy,
+      max_pax,
+      languages,
     })
     .eq('id', serviceId)
     .eq('user_id', user.id) // Security check
 
   if (serviceError) {
-    return { error: 'Error al actualizar el servicio' }
+    console.error('Update Service Error:', serviceError)
+    return { error: `Error al actualizar: ${serviceError.message}` }
   }
 
   // 2. Update photos (Replace strategy)

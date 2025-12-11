@@ -271,15 +271,15 @@ export default async function GuidePage({ params }: GuidePageProps) {
       )}
 
       {/* Services */}
-      <div className="px-5">
+      <div className="px-5 max-w-6xl mx-auto">
         <h2 className="font-bold text-lg mb-4">Mis Tours y Actividades</h2>
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services?.map((service) => (
             <div key={service.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
               {/* Service Image */}
               {/* @ts-ignore */}
               {service.service_photos && service.service_photos.length > 0 ? (
-                <div className="relative h-48 bg-gray-100 overflow-hidden">
+                <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
                   <Image
                     /* @ts-ignore */
                     src={service.service_photos[0].url}
@@ -287,7 +287,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     quality={90}
-                    sizes="(max-width: 768px) 100vw, 800px"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>

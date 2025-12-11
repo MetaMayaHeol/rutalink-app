@@ -10,7 +10,7 @@ export const WEEKDAYS = [
 
 export const DEFAULT_TIME_SLOTS = ['8:00', '10:00', '13:00', '16:00'] as const
 
-export const MAX_SERVICE_PHOTOS = 3
+export const MAX_SERVICE_PHOTOS = 5
 export const MAX_GUIDE_PHOTOS = 3
 
 export const MAX_BIO_LENGTH = 300

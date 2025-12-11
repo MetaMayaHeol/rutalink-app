@@ -63,6 +63,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
           serviceId={service.id}
           initialData={{
             title: service.title,
+            subtitle: service.subtitle || '',
             description: service.description || '',
             price: service.price,
             duration: service.duration,
@@ -70,6 +71,14 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
             photos: photoUrls,
             locations: service.locations || [],
             categories: service.categories || [],
+            itinerary: service.itinerary || [],
+            includes: service.includes || [],
+            excludes: service.excludes || [],
+            requirements: service.requirements || [],
+            meeting_point: service.meeting_point || '',
+            cancellation_policy: service.cancellation_policy || 'flexible',
+            max_pax: service.max_pax,
+            languages: service.languages || [],
           }}
         />
       </div>

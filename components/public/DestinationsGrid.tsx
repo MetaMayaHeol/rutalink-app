@@ -15,7 +15,7 @@ export async function DestinationsGrid() {
   const citiesWithCounts = await Promise.all(
     cities.map(async (city) => {
       // Count unique guides who have active services in this city AND active public profile
-      const { data, error } = await supabase
+      let query = supabase
         .from('services')
         .select(`
           user_id,
@@ -27,8 +27,34 @@ export async function DestinationsGrid() {
         `)
         .contains('locations', [city.name])
         .eq('active', true)
-        .is('deleted_at', null)
         .eq('user.public_links.active', true)
+      
+      // Try with deleted_at, fall back without it
+      const { data, error } = await query.is('deleted_at', null)
+      
+      if (error) {
+        // If deleted_at column doesn't exist, retry without it
+        if (error.code === '42703') {
+          const fallback = await supabase
+            .from('services')
+            .select(`
+              user_id,
+              user:users!inner (
+                public_links!inner (
+                  active
+                )
+              )
+            `)
+            .contains('locations', [city.name])
+            .eq('active', true)
+            .eq('user.public_links.active', true)
+          
+          const uniqueGuides = new Set(fallback.data?.map(s => s.user_id))
+          return { ...city, guideCount: uniqueGuides.size }
+        }
+        console.error(`Error fetching guides for ${city.name}:`, error)
+        return { ...city, guideCount: 0 }
+      }
       
       // Get unique user IDs
       const uniqueGuides = new Set(data?.map(s => s.user_id))

@@ -1,6 +1,13 @@
 import { z } from 'zod'
 import { MAX_BIO_LENGTH, SUPPORTED_LANGUAGES } from './constants'
 
+const itineraryItemSchema = z.object({
+  title: z.string().min(1, 'El título es requerido'),
+  description: z.string().optional(),
+  duration: z.string().optional(), // e.g. "30 min", "1 hora"
+})
+
+
 export const profileSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres').max(50, 'El nombre es muy largo')
     .regex(/^[^<>]*$/, 'No se permiten caracteres especiales (< >)'),
@@ -18,14 +25,24 @@ export type ProfileFormValues = z.infer<typeof profileSchema>
 export const serviceSchema = z.object({
   title: z.string().min(3, 'El título debe tener al menos 3 caracteres').max(100)
     .regex(/^[^<>]*$/, 'No se permiten caracteres especiales (< >)'),
-  description: z.string().max(300, 'La descripción es muy larga')
-    .regex(/^[^<>]*$/, 'No se permiten caracteres especiales (< >)').optional(),
+  subtitle: z.string().max(150, 'El subtítulo es muy largo').optional(),
+  description: z.string().max(2000, 'La descripción es muy larga').optional(), // Increased limit
   price: z.coerce.number().min(0, 'El precio no puede ser negativo'),
   duration: z.coerce.number().min(15, 'La duración mínima es 15 minutos'),
   active: z.boolean().default(true),
-  photos: z.array(z.string().url()).max(3, 'Máximo 3 fotos por servicio').optional(),
+  photos: z.array(z.string().url()).max(5, 'Máximo 5 fotos por servicio').optional(), // Increased limit
   locations: z.array(z.string()).min(1, 'Selecciona al menos una ciudad'),
   categories: z.array(z.string()).min(1, 'Selecciona al menos una categoría').default([]),
+  
+  // New Fields
+  itinerary: z.array(itineraryItemSchema).optional().default([]),
+  includes: z.array(z.string()).optional().default([]),
+  excludes: z.array(z.string()).optional().default([]),
+  requirements: z.array(z.string()).optional().default([]),
+  meeting_point: z.string().optional(),
+  cancellation_policy: z.enum(['flexible', 'moderate', 'strict']).default('flexible'),
+  max_pax: z.coerce.number().min(1).optional(),
+  languages: z.array(z.string()).optional().default([]),
 })
 
 export type ServiceFormValues = z.infer<typeof serviceSchema>

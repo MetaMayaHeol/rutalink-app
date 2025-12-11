@@ -1,6 +1,6 @@
 import { createStaticClient } from '@/lib/supabase/static'
 import { notFound } from 'next/navigation'
-import { Clock } from 'lucide-react'
+import { Clock, MapPin, Users, Globe, Info, CheckCircle2, XCircle, AlertCircle, CircleDot } from 'lucide-react'
 import { formatPrice, formatDuration } from '@/lib/utils/formatters'
 import { BookingSection } from '@/components/public/BookingSection'
 import { BackButton } from '@/components/public/BackButton'
@@ -8,6 +8,8 @@ import { ImageLightbox } from '@/components/public/ImageLightbox'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { generateServiceSchema, generateBreadcrumbSchema } from '@/lib/seo/structured-data'
 import { ViewTracker } from '@/components/analytics/ViewTracker'
+import { Badge } from '@/components/ui/badge'
+import { LANGUAGE_NAMES, type Language } from '@/lib/utils/constants'
 
 // Revalidate every hour
 export const revalidate = 3600
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: ServicePageProps) {
   
   const { data: service } = await supabase
     .from('services')
-    .select('title, description, price')
+    .select('title, subtitle, description, price')
     .eq('id', serviceId)
     .single()
 
@@ -45,7 +47,7 @@ export async function generateMetadata({ params }: ServicePageProps) {
     .single()
 
   const title = `${service.title} - Tour en México | MySenda`
-  const description = service.description || `Reserva ${service.title} al mejor precio. Experiencia auténtica con guía local.`
+  const description = service.subtitle || service.description?.slice(0, 160) || `Reserva ${service.title} al mejor precio.`
   const imageUrl = photos?.url || `${baseUrl}/og-default.png`
 
   return {
@@ -65,12 +67,6 @@ export async function generateMetadata({ params }: ServicePageProps) {
       locale: 'es_MX',
       type: 'website',
     },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [imageUrl],
-    },
   }
 }
 
@@ -79,20 +75,20 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const supabase = createStaticClient()
 
   // 1. Fetch service details
-  // We handle potential missing column error (if migration not run on prod)
+  // Handling potential missing columns gracefully is harder with specific selects, 
+  // but we assume migration is run.
   let result = await supabase
     .from('services')
-    .select('id, title, description, price, duration, user_id')
+    .select('*') // Select all to get new columns
     .eq('id', serviceId)
     .is('deleted_at', null)
     .single()
 
-  // Fallback: If 'deleted_at' column doesn't exist (Error 42703), try without filter
+  // Fallback for deleted_at column missing
   if (result.error && result.error.code === '42703') {
-    console.warn('Warning: deleted_at column missing, falling back to unsafe query')
     result = await supabase
       .from('services')
-      .select('id, title, description, price, duration, user_id')
+      .select('*')
       .eq('id', serviceId)
       .single()
   }
@@ -100,9 +96,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const { data: service, error } = result
 
   if (error || !service) {
-    if (error && error.code !== 'PGRST116') {
-        console.error('Service Fetch Error:', error)
-    }
+    if (error && error.code !== 'PGRST116') console.error('Service Fetch Error:', error)
     notFound()
   }
 
@@ -113,16 +107,14 @@ export default async function ServicePage({ params }: ServicePageProps) {
     .eq('service_id', serviceId)
     .order('order')
 
-  // 3. Fetch guide info (for availability and contact)
+  // 3. Fetch guide info
   const { data: guide } = await supabase
     .from('users')
-    .select('id, name, whatsapp')
+    .select('id, name, whatsapp, photo_url, bio')
     .eq('id', service.user_id)
     .single()
 
-  if (!guide) {
-    notFound()
-  }
+  if (!guide) notFound()
 
   // 4. Fetch availability
   const { data: weekdays } = await supabase
@@ -141,7 +133,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const availableWeekdays = weekdays?.map(w => w.weekday) || []
   const availableTimeslots = timeslots?.map(t => t.time) || []
 
-  // Prepare images for lightbox
+  // Data processing
   const lightboxImages = photos?.map((photo, i) => ({
     url: photo.url,
     alt: `${service.title} - Photo ${i + 1}`
@@ -150,14 +142,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://mysenda.com'
   const serviceUrl = `${baseUrl}/s/${serviceId}`
   
-  // Fetch guide slug for breadcrumb
   const { data: guideLink } = await supabase
     .from('public_links')
     .select('slug')
     .eq('user_id', guide.id)
     .single()
 
-  // Generate structured data
+  // Schema
   const serviceSchema = generateServiceSchema({
     name: service.title,
     description: service.description || undefined,
@@ -172,71 +163,238 @@ export default async function ServicePage({ params }: ServicePageProps) {
     },
   })
 
-  const breadcrumbData = generateBreadcrumbSchema([
-    { name: 'Inicio', url: baseUrl },
-    { name: 'Explorar', url: `${baseUrl}/explorar` },
-    ...(guideLink ? [{ name: guide.name || 'Guía', url: `${baseUrl}/g/${guideLink.slug}` }] : []),
-    { name: service.title, url: serviceUrl },
-  ])
+  // Format Helpers
+  const formatLanguage = (lang: string) => LANGUAGE_NAMES[lang as Language] || lang.toUpperCase()
+  const cancellations = {
+    flexible: { label: 'Flexible', desc: 'Reembolso completo hasta 24 horas antes.' },
+    moderate: { label: 'Moderada', desc: 'Reembolso del 50% hasta 24 horas antes.' },
+    strict: { label: 'Estricta', desc: 'Sin reembolso por cancelación.' }
+  }
+  const cancelPolicy = cancellations[service.cancellation_policy as keyof typeof cancellations] || cancellations.flexible
 
   return (
     <>
       <ViewTracker type="service" guideId={guide.id} resourceId={serviceId} />
       <JsonLd data={serviceSchema} />
-      <JsonLd data={breadcrumbData} />
-      <div className="min-h-screen bg-white pb-24">
-      {/* Back Button */}
-      <div className="absolute top-4 left-4 z-10">
-        <BackButton />
-      </div>
-
-      <div className="p-5 max-w-3xl mx-auto pt-16">
-        {/* Title & Price */}
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{service.title}</h1>
-        
-        <div className="flex items-center gap-4 mb-8">
-          <span className="text-3xl font-bold text-green-600">
-            {formatPrice(service.price)}
-          </span>
-          <span className="flex items-center gap-1 text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">
-            <Clock size={18} />
-            {formatDuration(service.duration)}
-          </span>
+      
+      <div className="min-h-screen bg-gray-50 pb-24">
+        <div className="bg-white border-b sticky top-0 z-20 shadow-sm">
+           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+              <BackButton />
+              <div className="font-semibold text-gray-900 truncate max-w-[200px] md:max-w-md">
+                {service.title}
+              </div>
+              <div className="w-10"></div>{/* Spacer */}
+           </div>
         </div>
 
-        {/* Photos Gallery with Lightbox */}
-        {lightboxImages.length > 0 && (
-          <div className="mb-8">
-            <h3 className="font-bold text-xl mb-4">Photos</h3>
-            <ImageLightbox images={lightboxImages} />
-          </div>
-        )}
+        <main className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            {/* Left Content */}
+            <div className="lg:col-span-2 space-y-8">
+              
+              {/* Header */}
+              <div className="space-y-4">
+                <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                  {service.title}
+                </h1>
+                {service.subtitle && (
+                  <p className="text-xl text-gray-600 font-medium">
+                    {service.subtitle}
+                  </p>
+                )}
+                
+                <div className="flex flex-wrap gap-3 mt-4">
+                   <Badge variant="secondary" className="flex gap-1.5 px-3 py-1.5 text-sm">
+                      <Clock size={16} /> {formatDuration(service.duration)}
+                   </Badge>
+                   {service.max_pax && (
+                     <Badge variant="secondary" className="flex gap-1.5 px-3 py-1.5 text-sm">
+                        <Users size={16} /> Max {service.max_pax} pax
+                     </Badge>
+                   )}
+                   {service.languages && service.languages.length > 0 && (
+                      <Badge variant="secondary" className="flex gap-1.5 px-3 py-1.5 text-sm">
+                        <Globe size={16} /> {service.languages.map(formatLanguage).join(', ')}
+                      </Badge>
+                   )}
+                </div>
+              </div>
 
-        {/* Description */}
-        <div className="mb-8">
-          <h3 className="font-bold text-xl mb-3">Acerca de la actividad</h3>
-          <p className="text-gray-700 leading-relaxed text-lg">
-            {service.description}
-          </p>
-        </div>
+              {/* Photos */}
+              {lightboxImages.length > 0 && (
+                <div className="rounded-2xl overflow-hidden shadow-sm">
+                  <ImageLightbox images={lightboxImages} />
+                </div>
+              )}
 
-        {/* Booking Section */}
-        {guide.whatsapp ? (
-          <BookingSection
-            serviceName={service.title}
-            whatsapp={guide.whatsapp}
-            availableWeekdays={availableWeekdays}
-            availableTimeslots={availableTimeslots}
-            guideId={guide.id}
-            serviceId={service.id}
-          />
-        ) : (
-          <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-center">
-            El guía no ha configurado su WhatsApp para recibir reservas.
+              {/* Description */}
+              <div className="prose prose-lg max-w-none text-gray-700 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h3 className="font-bold text-gray-900">Sobre esta experiencia</h3>
+                <p className="whitespace-pre-line">{service.description}</p>
+              </div>
+
+              {/* Itinerary */}
+              {service.itinerary && service.itinerary.length > 0 && (
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    <Info className="text-green-600" /> Itinerario
+                  </h3>
+                  <div className="space-y-8 relative before:absolute before:inset-0 before:ml-3.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
+                     {service.itinerary.map((item: any, i: number) => (
+                       <div key={i} className="relative flex items-start group">
+                          <div className="absolute left-0 mt-1 h-7 w-7 flex items-center justify-center rounded-full bg-green-100 border-4 border-white ring-1 ring-green-200">
+                            <CircleDot size={14} className="text-green-700" />
+                          </div>
+                          <div className="ml-10 w-full">
+                            <h4 className="text-lg font-bold text-gray-900">
+                              {item.title}
+                            </h4>
+                            {item.duration && (
+                              <span className="text-sm font-medium text-green-600 mb-1 block">
+                                {item.duration}
+                              </span>
+                            )}
+                            {item.description && (
+                              <p className="text-gray-600 mt-2 text-base leading-relaxed">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                       </div>
+                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Inclusions & Exclusions */}
+              {(service.includes?.length > 0 || service.excludes?.length > 0) && (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {service.includes?.length > 0 && (
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                         <CheckCircle2 className="text-green-600" /> Lo que incluye
+                      </h3>
+                      <ul className="space-y-3">
+                        {service.includes.map((item: string, i: number) => (
+                          <li key={i} className="flex gap-3 text-gray-700">
+                            <CheckCircle2 size={18} className="text-green-500 shrink-0 mt-0.5" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {service.excludes?.length > 0 && (
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                         <XCircle className="text-red-500" /> No incluye
+                      </h3>
+                      <ul className="space-y-3">
+                        {service.excludes.map((item: string, i: number) => (
+                          <li key={i} className="flex gap-3 text-gray-700">
+                            <XCircle size={18} className="text-red-400 shrink-0 mt-0.5" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+               {/* Logistics & Requirements */}
+               <div className="grid md:grid-cols-2 gap-6">
+                 {service.meeting_point && (
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                         <MapPin className="text-blue-600" /> Punto de Encuentro
+                      </h3>
+                      <p className="text-gray-700">{service.meeting_point}</p>
+                    </div>
+                 )}
+                 {service.requirements?.length > 0 && (
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                         <AlertCircle className="text-amber-500" /> Qué llevar / Requisitos
+                      </h3>
+                       <ul className="space-y-2 list-disc list-inside text-gray-700">
+                        {service.requirements.map((item: string, i: number) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                 )}
+               </div>
+
+            </div>
+
+            {/* Right Sidebar (Sticky) */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 space-y-6">
+                
+                {/* Price Card */}
+                <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                  <div className="flex items-end gap-2 mb-6">
+                    <span className="text-4xl font-extrabold text-gray-900 tracking-tight">
+                       {formatPrice(service.price)}
+                    </span>
+                    <span className="text-gray-500 mb-1 font-medium">MXN / persona</span>
+                  </div>
+
+                  {guide.whatsapp ? (
+                    <BookingSection
+                      serviceName={service.title}
+                      whatsapp={guide.whatsapp}
+                      availableWeekdays={availableWeekdays}
+                      availableTimeslots={availableTimeslots}
+                      guideId={guide.id}
+                      serviceId={service.id}
+                    />
+                  ) : (
+                    <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-center text-sm">
+                      El guía no ha configurado su WhatsApp.
+                    </div>
+                  )}
+
+                  <div className="mt-6 pt-6 border-t border-gray-100">
+                    <div className="flex items-center gap-3 mb-2">
+                       <div className="bg-green-100 p-2 rounded-full text-green-700">
+                          <CheckCircle2 size={16} />
+                       </div>
+                       <div>
+                          <p className="font-bold text-sm text-gray-900">Cancelación {cancelPolicy.label}</p>
+                          <p className="text-xs text-gray-500">{cancelPolicy.desc}</p>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Guide Info */}
+                {guideLink && (
+                  <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer" >
+                    {/* Add Link wrapper later if needed, BookingSection handles messages though */}
+                     <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden relative">
+                         {guide.photo_url ? (
+                           <img src={guide.photo_url} alt={guide.name} className="object-cover w-full h-full" />
+                         ) : (
+                           <div className="w-full h-full bg-green-500 flex items-center justify-center text-white font-bold">{guide.name?.[0]}</div>
+                         )}
+                     </div>
+                     <div>
+                        <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">Organizado por</p>
+                        <p className="font-bold text-gray-900 text-lg">{guide.name}</p>
+                     </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
           </div>
-        )}
+        </main>
       </div>
-    </div>
     </>
   )
 }
