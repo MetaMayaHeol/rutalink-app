@@ -25,10 +25,12 @@ export async function signInWithEmail(prevState: any, formData: FormData) {
     // 2. Supabase Auth
     const supabase = await createClient()
     
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || origin
+    
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        emailRedirectTo: `${baseUrl}/auth/callback`,
       },
     })
 
