@@ -9,6 +9,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/seo/structured-data'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -79,6 +80,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <Header user={user} />
           {children}
           <Toaster />
+          <Analytics />
         </NextIntlClientProvider>
       </body>
     </html>
