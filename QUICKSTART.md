@@ -37,7 +37,7 @@
 
 ### 2.1 Installer les dépendances
 ```bash
-cd rutalink-app
+cd mysenda-app
 npm install
 ```
 

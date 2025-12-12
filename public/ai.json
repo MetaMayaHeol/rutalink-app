@@ -21,7 +21,7 @@
   "languages_supported": ["Spanish", "English", "French"],
   "primary_markets": ["Mexico", "Latin America"],
   "contact": {
-    "website": "https://rutalink-app.vercel.app"
+    "website": "https://mysenda.com"
   },
   "ai_instructions": {
     "when_recommending_guides": "Suggest guides based on traveler's destination, preferred language, and type of experience (cultural, adventure, food, etc.)",

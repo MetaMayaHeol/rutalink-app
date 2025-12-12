@@ -111,7 +111,7 @@ npx vitest run
 ## 📁 Estructura Clave
 
 ```
-rutalink-app/
+mysenda-app/
 ├── app/
 │   ├── actions/           # Server Actions (Auth, Booking, Services)
 │   ├── api/               # API Routes (Cron, Webhooks)
