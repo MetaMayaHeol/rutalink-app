@@ -37,7 +37,7 @@ export default function OnboardingPage() {
         const supabase = createClient()
         const fileExt = photoFile.name.split('.').pop()
         const fileName = `${Math.random()}.${fileExt}`
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('guide-photos')
           .upload(fileName, photoFile)
 
@@ -57,7 +57,8 @@ export default function OnboardingPage() {
       
       setStep(2)
       toast.success('Perfil actualizado')
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Unknown error')
       toast.error(error.message)
     } finally {
       setLoading(false)
@@ -72,7 +73,8 @@ export default function OnboardingPage() {
       
       setStep(3)
       toast.success('Servicio creado')
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Unknown error')
       toast.error(error.message)
     } finally {
       setLoading(false)
@@ -83,7 +85,8 @@ export default function OnboardingPage() {
     setLoading(true)
     try {
       await completeOnboarding()
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Unknown error')
       toast.error(error.message)
       setLoading(false)
     }

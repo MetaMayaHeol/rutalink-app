@@ -56,6 +56,7 @@ export function ServiceForm({ initialData, serviceId, userId, cities }: ServiceF
   }
 
   const form = useForm<ServiceFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(serviceSchema) as any,
     defaultValues,
   })
@@ -189,7 +190,7 @@ export function ServiceForm({ initialData, serviceId, userId, cities }: ServiceF
               <div className="space-y-2">
                 <Label>Política de Cancelación</Label>
                 <Select 
-                  onValueChange={(val: any) => form.setValue('cancellation_policy', val)}
+                  onValueChange={(val) => form.setValue('cancellation_policy', val as 'flexible' | 'moderate' | 'strict')}
                   defaultValue={form.watch('cancellation_policy')}
                 >
                   <SelectTrigger>

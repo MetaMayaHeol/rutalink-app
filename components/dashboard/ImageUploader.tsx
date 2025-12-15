@@ -53,9 +53,10 @@ export function ImageUploader({ value, onChange, bucket, path }: ImageUploaderPr
       const { data } = supabase.storage.from(bucket).getPublicUrl(fileName)
       
       onChange(data.publicUrl)
-    } catch (error: any) {
-      console.error('Upload error:', error)
-      setError(error.message || 'Error al subir la imagen')
+    } catch (err) {
+      const uploadError = err instanceof Error ? err : new Error('Unknown error')
+      console.error('Upload error:', uploadError)
+      setError(uploadError.message || 'Error al subir la imagen')
     } finally {
       setUploading(false)
     }

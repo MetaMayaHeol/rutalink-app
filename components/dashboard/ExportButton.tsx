@@ -5,7 +5,7 @@ import { Download } from 'lucide-react'
 import { downloadAsCsv } from '@/lib/utils/export'
 
 interface ExportButtonProps {
-  data: any[]
+  data: Record<string, unknown>[]
   filename?: string
 }
 
