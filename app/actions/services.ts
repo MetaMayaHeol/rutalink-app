@@ -6,6 +6,31 @@ import { indexSingleService, deleteServiceIndex } from '@/lib/ai/indexer'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+import { slugify } from '@/lib/utils/formatters'
+import { SupabaseClient } from '@supabase/supabase-js'
+
+async function ensureCitiesExist(supabase: SupabaseClient, locations: string[]) {
+  if (!locations || locations.length === 0) return
+
+  try {
+    for (const location of locations) {
+      const slug = slugify(location)
+      // We use ignoreDuplicates to not overwrite existing cities with partial data
+      const { error } = await supabase.from('cities').upsert({
+        slug,
+        name: location,
+        is_active: true
+      }, { onConflict: 'slug', ignoreDuplicates: true })
+      
+      if (error) {
+        console.error('Error upserting city:', error)
+      }
+    }
+  } catch (err) {
+    console.error('Unexpected error in ensureCitiesExist:', err)
+  }
+}
+
 export async function createService(formData: ServiceFormValues) {
   const supabase = await createClient()
 
@@ -33,6 +58,9 @@ export async function createService(formData: ServiceFormValues) {
     title, subtitle, description, price, duration, active, photos, locations, categories,
     itinerary, includes, excludes, requirements, meeting_point, cancellation_policy, max_pax, languages
   } = validatedFields.data
+
+  // Ensure cities exist in DB
+  await ensureCitiesExist(supabase, locations)
 
   // 1. Create service
   const { data: service, error: serviceError } = await supabase
@@ -110,6 +138,9 @@ export async function updateService(serviceId: string, formData: ServiceFormValu
     title, subtitle, description, price, duration, active, photos, locations, categories,
     itinerary, includes, excludes, requirements, meeting_point, cancellation_policy, max_pax, languages
   } = validatedFields.data
+
+  // Ensure cities exist in DB
+  await ensureCitiesExist(supabase, locations)
 
   // 1. Update service
   const { error: serviceError } = await supabase

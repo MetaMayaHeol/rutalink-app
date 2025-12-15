@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { cities, getCityBySlug } from '@/lib/seo/cities'
+import { cities as staticCities } from '@/lib/seo/cities'
+import { getAllCitiesResults, getCityResult } from '@/lib/seo/cities-db'
 import { activities } from '@/lib/seo/activities'
 import { CityHero } from '@/components/seo/CityHero'
 import { TourCard } from '@/components/directory/TourCard'
@@ -25,6 +26,8 @@ export async function generateStaticParams() {
   const locales = ['es', 'fr']
   const params: { slug: string; locale: string }[] = []
   
+  const cities = await getAllCitiesResults()
+
   for (const locale of locales) {
     for (const city of cities) {
       params.push({ slug: city.slug, locale })
@@ -37,7 +40,7 @@ export async function generateStaticParams() {
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params
-  const city = getCityBySlug(slug)
+  const city = await getCityResult(slug)
   const t = await getTranslations({ locale, namespace: 'cityPage' })
   
   if (!city) {
@@ -46,12 +49,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
-  // Get city translations
-  const tCity = await getTranslations({ locale, namespace: `cities.${city.slug}` })
-  const cityName = tCity('name')
-  const cityDescription = tCity('description')
-  const cityMetaDescription = tCity('metaDescription')
-  const cityHighlights = tCity('highlights').split('|')
+  // Determine if we should use translations (static city) or DB content (dynamic city)
+  const isStatic = staticCities.some(c => c.slug === city.slug)
+
+  let cityName, cityDescription, cityMetaDescription, cityHighlights
+
+  if (isStatic) {
+    // Get city translations
+    const tCity = await getTranslations({ locale, namespace: `cities.${city.slug}` })
+    cityName = tCity('name')
+    cityDescription = tCity('description')
+    cityMetaDescription = tCity('metaDescription')
+    cityHighlights = tCity('highlights').split('|')
+  } else {
+    // Use DB content
+    cityName = city.name
+    cityDescription = city.description
+    cityMetaDescription = city.metaDescription || city.description.substring(0, 160)
+    cityHighlights = city.highlights
+  }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://mysenda.com'
 
@@ -94,18 +110,30 @@ export default async function CityPage({ params }: Props) {
   const { slug, locale } = await params
   setRequestLocale(locale)
   
-  const city = getCityBySlug(slug)
+  const city = await getCityResult(slug)
   const t = await getTranslations('cityPage')
   
   if (!city) {
     notFound()
   }
 
-  // Get city translations
-  const tCity = await getTranslations(`cities.${city.slug}`)
-  const cityName = tCity('name')
-  const cityDescription = tCity('description')
-  const cityHighlights = tCity('highlights').split('|')
+  // Determine if we should use translations (static city) or DB content (dynamic city)
+  const isStatic = staticCities.some(c => c.slug === city.slug)
+
+  let cityName, cityDescription, cityHighlights
+
+  if (isStatic) {
+    // Get city translations
+    const tCity = await getTranslations(`cities.${city.slug}`)
+    cityName = tCity('name')
+    cityDescription = tCity('description')
+    cityHighlights = tCity('highlights').split('|')
+  } else {
+    // Use DB content
+    cityName = city.name
+    cityDescription = city.description
+    cityHighlights = city.highlights
+  }
   
   // Get activities translations
   const tActivities = await getTranslations('activities')

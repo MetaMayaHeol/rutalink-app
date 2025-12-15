@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { cities } from '@/lib/seo/cities'
+import { getAllCitiesResults } from '@/lib/seo/cities-db'
 import { activities } from '@/lib/seo/activities'
 import { createStaticClient } from '@/lib/supabase/static'
 
@@ -35,7 +35,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   // 2. Cities
-  cities.forEach(city => {
+  const citiesData = await getAllCitiesResults()
+  
+  citiesData.forEach(city => {
     locales.forEach(locale => {
       sitemapEntries.push({
         url: `${baseUrl}/${locale}/ciudad/${city.slug}`,

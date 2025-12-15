@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { deleteService } from '@/app/actions/services'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 
+import { getAllCitiesResults } from '@/lib/seo/cities-db'
+
 interface EditServicePageProps {
   params: Promise<{ id: string }>
 }
@@ -13,6 +15,7 @@ interface EditServicePageProps {
 export default async function EditServicePage({ params }: EditServicePageProps) {
   const { id } = await params
   const supabase = await createClient()
+  const citiesData = await getAllCitiesResults()
 
   const {
     data: { user },
@@ -61,6 +64,7 @@ export default async function EditServicePage({ params }: EditServicePageProps) 
         <ServiceForm 
           userId={user.id}
           serviceId={service.id}
+          cities={citiesData}
           initialData={{
             title: service.title,
             subtitle: service.subtitle || '',

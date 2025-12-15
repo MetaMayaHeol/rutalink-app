@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { activities, getActivityBySlug } from '@/lib/seo/activities'
-import { cities } from '@/lib/seo/cities'
+import { getAllCitiesResults } from '@/lib/seo/cities-db'
+
+
 import { ActivityHero } from '@/components/seo/ActivityHero'
 import { TourCard } from '@/components/directory/TourCard'
 import { createClient } from '@supabase/supabase-js'
@@ -192,6 +194,7 @@ export default async function ActivityPage({ params }: Props) {
 
   // Get cities translations for linking
   const tCities = await getTranslations('cities')
+  const citiesData = await getAllCitiesResults()
 
   return (
     <div className="min-h-screen bg-white">
@@ -313,14 +316,17 @@ export default async function ActivityPage({ params }: Props) {
             {t('bestDestinations', { activity: activityName.toLowerCase() })}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {cities.slice(0, 8).map((city) => (
+            {citiesData.slice(0, 8).map((city) => (
               <Link 
                 key={city.slug} 
                 href={`/${locale}/ciudad/${city.slug}`}
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-green-50 transition-colors border border-gray-100 hover:border-green-200"
               >
                 <h3 className="font-medium text-gray-900 group-hover:text-green-700 text-center">
-                  {tCities(`${city.slug}.name`)}
+                  {/* Try translation first (for static cities), else use DB name */}
+                  {['merida','valladolid','izamal','rio-lagartos','mani','uxmal','celestun','sisal','playa-del-carmen','tulum','bacalar','isla-mujeres','campeche','calakmul','isla-aguada'].includes(city.slug) 
+                    ? tCities(`${city.slug}.name`) 
+                    : city.name}
                 </h3>
               </Link>
             ))}

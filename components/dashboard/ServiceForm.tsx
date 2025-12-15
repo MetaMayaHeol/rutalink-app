@@ -15,7 +15,7 @@ import { MultiSelect } from '@/components/ui/multi-select'
 import { toast } from 'sonner'
 import { LoadingButton } from '@/components/ui/LoadingButton'
 import { useRouter } from 'next/navigation'
-import { cities } from '@/lib/seo/cities'
+import { cities as staticCities, type City } from '@/lib/seo/cities'
 import { activities } from '@/lib/seo/activities'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs'
 import { ListInput } from '@/components/dashboard/ListInput'
@@ -27,11 +27,14 @@ interface ServiceFormProps {
   initialData?: ServiceFormValues
   serviceId?: string
   userId: string
+  cities?: City[]
 }
 
-export function ServiceForm({ initialData, serviceId, userId }: ServiceFormProps) {
+export function ServiceForm({ initialData, serviceId, userId, cities }: ServiceFormProps) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+
+  const availableCities = cities || staticCities
 
   const defaultValues: ServiceFormValues = initialData || {
     title: '',
@@ -128,7 +131,7 @@ export function ServiceForm({ initialData, serviceId, userId }: ServiceFormProps
                  <div className="space-y-2">
                   <Label>Ciudades <span className="text-red-500">*</span></Label>
                   <MultiSelect
-                    options={cities.map(c => ({ label: c.name, value: c.name }))}
+                    options={availableCities.map(c => ({ label: c.name, value: c.name }))}
                     selected={form.watch('locations') || []}
                     onChange={(selected) => form.setValue('locations', selected)}
                     placeholder="Selecciona ciudades..."
