@@ -1,11 +1,10 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useMemo } from 'react'
 import { signInWithEmail } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useEffect, useState } from 'react'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,13 +16,17 @@ const initialState = {
 
 export default function LoginPage() {
   const [state, action, isPending] = useActionState(signInWithEmail, initialState)
-  const [origin, setOrigin] = useState('')
-  const [isGuideSignup, setIsGuideSignup] = useState(false)
+  
+  // Use useMemo for derived values instead of useState+useEffect
+  const origin = useMemo(() => {
+    if (typeof window === 'undefined') return ''
+    return window.location.origin
+  }, [])
 
-  useEffect(() => {
-    setOrigin(window.location.origin)
+  const isGuideSignup = useMemo(() => {
+    if (typeof window === 'undefined') return false
     const params = new URLSearchParams(window.location.search)
-    setIsGuideSignup(params.get('role') === 'guide')
+    return params.get('role') === 'guide'
   }, [])
 
   return (

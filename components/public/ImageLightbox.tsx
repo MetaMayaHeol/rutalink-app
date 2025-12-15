@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { X } from 'lucide-react'
 
@@ -13,16 +13,25 @@ export function ImageLightbox({ images, initialIndex = 0 }: ImageLightboxProps) 
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
 
+  // Manage body scroll in useEffect to satisfy react-hooks/immutability
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   const openLightbox = (index: number) => {
     setCurrentIndex(index)
     setIsOpen(true)
-    // Prevent body scroll when lightbox is open
-    document.body.style.overflow = 'hidden'
   }
 
   const closeLightbox = () => {
     setIsOpen(false)
-    document.body.style.overflow = 'unset'
   }
 
   const goToNext = () => {

@@ -10,6 +10,7 @@ interface QRCodeCardProps {
 }
 
 export function QRCodeCard({ slug }: QRCodeCardProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const svgRef = useRef<any>(null)
   const [url, setUrl] = useState('')
 
@@ -51,6 +52,7 @@ export function QRCodeCard({ slug }: QRCodeCardProps) {
       </p>
       
       <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <QRCode
           ref={svgRef as any}
           value={url}

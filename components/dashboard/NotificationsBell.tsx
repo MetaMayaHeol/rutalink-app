@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Bell } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -11,14 +11,24 @@ import {
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
+// Typed notification interface
+interface Notification {
+  id: string
+  title: string
+  message: string
+  link?: string
+  read: boolean
+  created_at: string
+}
+
 export function NotificationsBell({ userId }: { userId: string }) {
   const [count, setCount] = useState(0)
-  const [notifications, setNotifications] = useState<any[]>([])
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [isOpen, setIsOpen] = useState(false)
   
   const supabase = createClient()
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     // Fetch count
     const { count: unreadCount } = await supabase
       .from('notifications')
@@ -36,8 +46,8 @@ export function NotificationsBell({ userId }: { userId: string }) {
       .order('created_at', { ascending: false })
       .limit(5)
     
-    setNotifications(data || [])
-  }
+    setNotifications((data || []) as Notification[])
+  }, [supabase, userId])
 
   useEffect(() => {
     fetchNotifications()
@@ -58,7 +68,7 @@ export function NotificationsBell({ userId }: { userId: string }) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [userId])
+  }, [userId, supabase, fetchNotifications])
 
   const markAsRead = async (id: string) => {
     await supabase.from('notifications').update({ read: true }).eq('id', id)
