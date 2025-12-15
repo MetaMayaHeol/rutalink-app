@@ -19,6 +19,15 @@ import { StickyWhatsAppCTA } from '@/components/public/StickyWhatsAppCTA'
 // Revalidate every hour
 export const revalidate = 3600
 
+interface ServiceWithPhotosResponse {
+  id: string
+  title: string
+  description: string | null
+  price: number
+  duration: number
+  service_photos: { url: string }[]
+}
+
 interface GuidePageProps {
   params: Promise<{ slug: string }>
 }
@@ -125,12 +134,14 @@ export default async function GuidePage({ params }: GuidePageProps) {
     .limit(3)
 
   // 4. Fetch active services
-  const { data: services } = await supabase
+  const { data: rawServices } = await supabase
     .from('services')
     .select('id, title, description, price, duration, service_photos(url)')
     .eq('user_id', link.user_id)
     .eq('active', true)
     .order('price')
+
+  const services = rawServices as ServiceWithPhotosResponse[] | null
 
   // 5. Fetch reviews
   const reviews = await getReviews(link.user_id)
@@ -170,7 +181,6 @@ export default async function GuidePage({ params }: GuidePageProps) {
   const serviceSchemas = services?.map(service => generateServiceSchema({
     name: service.title,
     description: service.description || undefined,
-    // @ts-ignore
     image: service.service_photos?.[0]?.url || undefined,
     provider: {
       name: guide.name || 'Guía',
@@ -282,11 +292,9 @@ export default async function GuidePage({ params }: GuidePageProps) {
           {services?.map((service) => (
             <div key={service.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group">
               {/* Service Image */}
-              {/* @ts-ignore */}
               {service.service_photos && service.service_photos.length > 0 ? (
                 <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
                   <Image
-                    /* @ts-ignore */
                     src={service.service_photos[0].url}
                     alt={service.title}
                     fill

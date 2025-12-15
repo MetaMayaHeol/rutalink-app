@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   const { data: testUsers, error: fetchError } = await supabase
     .from('users')
     .select('id')
-    .ilike('email', '%@rutalink.test')
+    .ilike('email', '%@mysenda.test')
 
   if (fetchError) {
     return NextResponse.json({ error: fetchError.message }, { status: 500 })

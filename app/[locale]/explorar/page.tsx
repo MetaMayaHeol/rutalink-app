@@ -10,6 +10,20 @@ export const metadata: Metadata = {
 // Force dynamic to ensure we see the latest data (and avoid caching issues during testing)
 export const dynamic = 'force-dynamic'
 
+interface GuideWithUserResponse {
+  slug: string
+  user: {
+    id: string
+    name: string | null
+    bio: string | null
+    photo_url: string | null
+    languages: string[] | null
+    city: string | null
+    country: string | null
+    is_verified: boolean | null
+  } | null
+}
+
 export default async function ExplorePage() {
   // Use Service Role Key to bypass RLS policies for the public directory
   // This ensures we can read user profiles even if RLS is set to private
@@ -39,9 +53,10 @@ export default async function ExplorePage() {
     console.error('Error fetching guides:', error)
   }
 
+  const typedGuides = guides as GuideWithUserResponse[] | null
+
   // Transform data for the client component
-  const formattedGuides = await Promise.all((guides || []).map(async (item) => {
-    // @ts-ignore
+  const formattedGuides = await Promise.all((typedGuides || []).map(async (item) => {
     const userId = item.user?.id
     
     // Calculate average rating for this guide
@@ -64,20 +79,13 @@ export default async function ExplorePage() {
 
     return {
       slug: item.slug,
-      // @ts-ignore - Supabase types join handling
-      name: item.user?.name || 'Guía RutaLink',
-      // @ts-ignore
-      bio: item.user?.bio,
-      // @ts-ignore
-      photo_url: item.user?.photo_url,
-      // @ts-ignore
-      languages: item.user?.languages,
-      // @ts-ignore
-      city: item.user?.city,
-      // @ts-ignore
-      country: item.user?.country,
-      // @ts-ignore
-      is_verified: item.user?.is_verified,
+      name: item.user?.name || 'Guía MySenda',
+      bio: item.user?.bio ?? null,
+      photo_url: item.user?.photo_url ?? null,
+      languages: item.user?.languages ?? null,
+      city: item.user?.city ?? null,
+      country: item.user?.country ?? null,
+      is_verified: item.user?.is_verified ?? false,
       // Only include rating fields if there are reviews
       ...(reviewCount > 0 && {
         averageRating,
@@ -88,3 +96,4 @@ export default async function ExplorePage() {
 
   return <DirectoryClient initialGuides={formattedGuides} />
 }
+

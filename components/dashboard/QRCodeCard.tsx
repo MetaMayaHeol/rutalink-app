@@ -35,7 +35,7 @@ export function QRCodeCard({ slug }: QRCodeCardProps) {
       const pngFile = canvas.toDataURL('image/png')
       
       const downloadLink = document.createElement('a')
-      downloadLink.download = `rutalink-${slug}.png`
+      downloadLink.download = `mysenda-${slug}.png`
       downloadLink.href = pngFile
       downloadLink.click()
     }

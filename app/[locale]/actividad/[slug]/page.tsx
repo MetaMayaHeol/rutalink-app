@@ -245,7 +245,6 @@ export default async function ActivityPage({ params }: Props) {
               <div className="flex flex-wrap justify-center gap-8 mb-12">
                 {tours.map((tour: any) => (
                   <div key={tour.id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] max-w-md h-full">
-                     {/* @ts-ignore */}
                      <TourCard tour={tour} />
                   </div>
                 ))}

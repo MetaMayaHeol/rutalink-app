@@ -83,7 +83,7 @@ export async function GET(request: Request) {
   for (const guide of testGuides) {
     // 1. Create User (Mocking auth user ID with random UUID)
     const mockId = crypto.randomUUID()
-    const email = `test_guide_${mockId.slice(0, 8)}@rutalink.test`
+    const email = `test_guide_${mockId.slice(0, 8)}@mysenda.test`
     
     // Insert into users table
     const { error: userError } = await supabase
@@ -184,6 +184,6 @@ export async function GET(request: Request) {
   return NextResponse.json({ 
     message: 'Seeding completed', 
     results,
-    cleanup_url: `${new URL(request.url).origin}/api/test/cleanup?secret=rutalink-test-admin`
+    cleanup_url: `${new URL(request.url).origin}/api/test/cleanup?secret=${process.env.TEST_ADMIN_SECRET}`
   })
 }

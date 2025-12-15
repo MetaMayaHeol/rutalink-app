@@ -60,7 +60,7 @@ export default async function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-        <ExportButton data={rawData} filename={`rutalink-analytics-${new Date().toISOString().split('T')[0]}.csv`} />
+        <ExportButton data={rawData} filename={`mysenda-analytics-${new Date().toISOString().split('T')[0]}.csv`} />
       </div>
 
       <StatsCards 

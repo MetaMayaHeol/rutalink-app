@@ -71,7 +71,7 @@ export async function sendNotification({
 
       if (emailTo) {
         await resend.emails.send({
-          from: 'RutaLink <noreply@rutalink.com>', // Needs domain config or testing
+          from: 'MySenda <noreply@mysenda.com>',
           to: emailTo,
           subject: title,
           html: `<p><strong>${title}</strong></p><p>${message}</p>${link ? `<a href="${process.env.NEXT_PUBLIC_APP_URL}${link}">Ver detalles</a>` : ''}`

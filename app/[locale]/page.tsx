@@ -15,6 +15,19 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 // Force dynamic to ensure we see the latest featured guides
 export const dynamic = 'force-dynamic'
 
+interface FeaturedGuideResponse {
+  slug: string
+  user: {
+    name: string | null
+    bio: string | null
+    photo_url: string | null
+    languages: string[] | null
+    city: string | null
+    country: string | null
+    is_verified: boolean | null
+  } | null
+}
+
 async function getFeaturedGuides() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -38,24 +51,18 @@ async function getFeaturedGuides() {
     .limit(3)
     .order('created_at', { ascending: false })
 
-  return guides?.map(item => ({
+  return (guides as FeaturedGuideResponse[] | null)?.map(item => ({
     slug: item.slug,
-    // @ts-ignore
-    name: item.user?.name || 'Guía RutaLink',
-    // @ts-ignore
-    bio: item.user?.bio,
-    // @ts-ignore
-    photo_url: item.user?.photo_url,
-    // @ts-ignore
-    languages: item.user?.languages,
-    // @ts-ignore
-    city: item.user?.city,
-    // @ts-ignore
-    country: item.user?.country,
-    // @ts-ignore
-    is_verified: item.user?.is_verified,
+    name: item.user?.name || 'Guía MySenda',
+    bio: item.user?.bio ?? null,
+    photo_url: item.user?.photo_url ?? null,
+    languages: item.user?.languages ?? null,
+    city: item.user?.city ?? null,
+    country: item.user?.country ?? null,
+    is_verified: item.user?.is_verified ?? false,
   })) || []
 }
+
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -73,7 +80,7 @@ export default async function HomePage({ params }: Props) {
   const tFooter = await getTranslations('footer')
   
   const featuredGuides = await getFeaturedGuides()
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rutalink.com'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://mysenda.com'
 
   return (
     <>
