@@ -31,7 +31,7 @@ export function ShareButton({ title, text, url, className, variant = "outline", 
       try {
         await navigator.clipboard.writeText(url)
         toast.success('Enlace copiado al portapapeles')
-      } catch (error) {
+      } catch (_error) {
         toast.error('No se pudo copiar el enlace')
       }
     }

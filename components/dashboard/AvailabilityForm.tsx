@@ -82,7 +82,7 @@ export function AvailabilityForm({ initialWeekdays, initialTimeslots }: Availabi
       } else {
         toast.success(t('availabilitySaved'))
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error(t('unexpectedError'))
     } finally {
       setLoading(false)

@@ -15,7 +15,7 @@ export async function DestinationsGrid() {
   const citiesWithCounts = await Promise.all(
     cities.map(async (city) => {
       // Count unique guides who have active services in this city AND active public profile
-      let query = supabase
+      const query = supabase
         .from('services')
         .select(`
           user_id,

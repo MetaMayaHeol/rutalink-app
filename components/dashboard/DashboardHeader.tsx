@@ -1,6 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft } from 'lucide-react'
 import { ReactNode } from 'react'
@@ -18,7 +17,6 @@ export function DashboardHeader({
   backUrl = '/dashboard',
   children
 }: DashboardHeaderProps) {
-  const router = useRouter()
 
   return (
     <div className="bg-white border-b border-gray-200 p-5 flex items-center gap-3 sticky top-0 z-10">

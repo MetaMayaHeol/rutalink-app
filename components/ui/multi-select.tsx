@@ -136,7 +136,7 @@ export function MultiSelect({
                       type="button"
                     >
                       <span className="mr-2">+</span>
-                      Ajouter "{inputValue}"
+                      Ajouter &quot;{inputValue}&quot;
                     </Button>
                   )}
                 </div>

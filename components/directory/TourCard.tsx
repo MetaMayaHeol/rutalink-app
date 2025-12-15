@@ -4,7 +4,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, Clock, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useTranslations } from 'next-intl'
 import { useLocale } from 'next-intl'
 
 
@@ -29,7 +28,6 @@ interface TourCardProps {
 }
 
 export function TourCard({ tour }: TourCardProps) {
-  const t = useTranslations('common') // or specific namespace if available
   const locale = useLocale()
 
   return (

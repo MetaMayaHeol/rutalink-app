@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { serviceSchema, type ServiceFormValues } from '@/lib/utils/validators'
 import { createService, updateService } from '@/app/actions/services'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -79,7 +78,7 @@ export function ServiceForm({ initialData, serviceId, userId, cities }: ServiceF
         router.push('/dashboard')
         router.refresh()
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Ocurrió un error inesperado')
     } finally {
       setLoading(false)

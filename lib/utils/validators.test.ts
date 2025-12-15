@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { profileSchema, bookingSchema, serviceSchema } from './validators'
+import { profileSchema, bookingSchema } from './validators'
 
 describe('Validators', () => {
   describe('profileSchema', () => {

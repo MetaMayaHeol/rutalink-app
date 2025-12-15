@@ -40,7 +40,7 @@ export function ProfileForm({ initialData, userId }: ProfileFormProps) {
         toast.success(t('profileUpdated'))
         router.refresh()
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error(t('unexpectedError'))
     } finally {
       setLoading(false)
