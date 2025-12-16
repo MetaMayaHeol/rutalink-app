@@ -130,11 +130,33 @@ describe('Validators', () => {
       expect(result.success).toBe(false)
     })
 
+    it('should reject price exceeding limit', () => {
+      const result = serviceSchema.safeParse({
+        title: 'Tour Test',
+        price: 10000001, // 10M + 1
+        duration: 60,
+        locations: ['Cancun'],
+        categories: ['aventura'],
+      })
+      expect(result.success).toBe(false)
+    })
+
     it('should reject duration less than 15 minutes', () => {
       const result = serviceSchema.safeParse({
         title: 'Quick Tour',
         price: 100,
         duration: 10, // Too short
+        locations: ['Cancun'],
+        categories: ['aventura'],
+      })
+      expect(result.success).toBe(false)
+    })
+
+    it('should reject duration exceeding limit', () => {
+      const result = serviceSchema.safeParse({
+        title: 'Long Tour',
+        price: 100,
+        duration: 43201, // 30 days + 1 min
         locations: ['Cancun'],
         categories: ['aventura'],
       })
@@ -184,6 +206,18 @@ describe('Validators', () => {
         cancellation_policy: 'strict',
       })
       expect(result.success).toBe(true)
+    })
+
+    it('should reject max_pax exceeding limit', () => {
+      const result = serviceSchema.safeParse({
+        title: 'Tour Test',
+        price: 100,
+        duration: 60,
+        locations: ['Cancun'],
+        categories: ['cultural'],
+        max_pax: 1001
+      })
+      expect(result.success).toBe(false)
     })
 
     it('should accept max 5 photos', () => {

@@ -27,8 +27,8 @@ export const serviceSchema = z.object({
     .regex(/^[^<>]*$/, 'No se permiten caracteres especiales (< >)'),
   subtitle: z.string().max(150, 'El subtítulo es muy largo').optional(),
   description: z.string().max(2000, 'La descripción es muy larga').optional(), // Increased limit
-  price: z.coerce.number().min(0, 'El precio no puede ser negativo'),
-  duration: z.coerce.number().min(15, 'La duración mínima es 15 minutos'),
+  price: z.coerce.number().min(0, 'El precio no puede ser negativo').max(10000000, 'El precio excede el límite permitido (10M)'),
+  duration: z.coerce.number().min(15, 'La duración mínima es 15 minutos').max(43200, 'La duración máxima es 30 días'),
   active: z.boolean().default(true),
   photos: z.array(z.string().url()).max(5, 'Máximo 5 fotos por servicio').optional(), // Increased limit
   locations: z.array(z.string()).min(1, 'Selecciona al menos una ciudad'),
@@ -41,7 +41,7 @@ export const serviceSchema = z.object({
   requirements: z.array(z.string()).optional().default([]),
   meeting_point: z.string().optional(),
   cancellation_policy: z.enum(['flexible', 'moderate', 'strict']).default('flexible'),
-  max_pax: z.coerce.number().min(1).optional(),
+  max_pax: z.coerce.number().min(1).max(1000, 'Máximo 1000 personas').optional(),
   languages: z.array(z.string()).optional().default([]),
 })
 
