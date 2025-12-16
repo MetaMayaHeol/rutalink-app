@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, Clock, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 
 interface TourCardProps {
@@ -29,6 +29,7 @@ interface TourCardProps {
 
 export function TourCard({ tour }: TourCardProps) {
   const locale = useLocale()
+  const t = useTranslations('common')
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full group">
@@ -90,21 +91,20 @@ export function TourCard({ tour }: TourCardProps) {
                     )}
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-xs text-gray-500 leading-tight">By</span>
+                    <span className="text-xs text-gray-500 leading-tight">{t('by')}</span>
                     <span className="text-xs font-medium text-gray-900 leading-tight truncate max-w-[100px]">{tour.guide.name}</span>
                 </div>
              </div>
              
              <div className="text-right">
-                <span className="block text-xs text-gray-500">From</span>
+                <span className="block text-xs text-gray-500">{t('from')}</span>
                 <span className="block font-bold text-green-700">${tour.price}</span>
              </div>
         </div>
         
         <Link href={`/${locale}/s/${tour.id}`} className="mt-4">
             <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-              {/* Replace with translation key later */}
-              View Details
+              {t('viewDetails')}
             </Button>
         </Link>
       </div>

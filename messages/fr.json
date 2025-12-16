@@ -7,7 +7,32 @@
     "back": "Retour",
     "next": "Suivant",
     "search": "Rechercher",
-    "viewAll": "Voir tout"
+    "viewAll": "Voir tout",
+    "viewDetails": "Voir les détails",
+    "by": "Par",
+    "from": "À partir de"
+  },
+  "booking": {
+    "title": "Réservez votre place",
+    "date": "Date",
+    "selectDate": "Sélectionnez une date",
+    "time": "Horaire",
+    "yourName": "Votre Nom",
+    "yourWhatsapp": "Votre WhatsApp",
+    "whatsappHint": "Nous vous contacterons à ce numéro pour confirmer.",
+    "request": "Demander une réservation",
+    "processing": "Traitement...",
+    "perPerson": "/ personne",
+    "organizedBy": "Organisé par",
+    "cancellation": {
+        "title": "Annulation",
+        "flexible": "Flexible",
+        "flexibleDesc": "Remboursement intégral jusqu'à 24 heures avant.",
+        "moderate": "Modérée",
+        "moderateDesc": "Remboursement de 50% jusqu'à 24 heures avant.",
+        "strict": "Stricte",
+        "strictDesc": "Aucun remboursement en cas d'annulation."
+    }
   },
   "nav": {
     "destinations": "Destinations",

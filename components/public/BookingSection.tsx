@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from 'react'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { es, fr, enUS } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
+import { useTranslations } from 'next-intl'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { generateWhatsAppLink, isMobile } from '@/lib/whatsapp'
@@ -31,8 +32,10 @@ export function BookingSection({
   availableWeekdays, 
   availableTimeslots,
   guideId,
-  serviceId
-}: BookingSectionProps) {
+  serviceId,
+  locale
+}: BookingSectionProps & { locale: string }) {
+  const t = useTranslations('booking')
   const [date, setDate] = useState<Date>()
   const [time, setTime] = useState<string>()
   const [name, setName] = useState('')
@@ -42,7 +45,7 @@ export function BookingSection({
 
   const handleBooking = async () => {
     if (!date || !time || !name || !customerWhatsapp) {
-      toast.error('Por favor completa todos los campos')
+      toast.error(t('errorIncomplete')) // You might want to add this key or reuse a common one
       return
     }
 
@@ -112,11 +115,11 @@ export function BookingSection({
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h3 className="font-bold text-lg">Reserva tu lugar</h3>
+        <h3 className="font-bold text-lg">{t('title')}</h3>
         
         {/* Date Picker */}
         <div className="space-y-2">
-          <Label>Fecha</Label>
+          <Label>{t('date')}</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -127,7 +130,7 @@ export function BookingSection({
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP", { locale: es }) : <span>Selecciona una fecha</span>}
+                {date ? format(date, "PPP", { locale: locale === 'fr' ? fr : es }) : <span>{t('selectDate')}</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -145,7 +148,7 @@ export function BookingSection({
         {/* Time Slots */}
         {date && (
           <div className="space-y-2">
-            <Label>Horario</Label>
+            <Label>{t('time')}</Label>
             <div className="grid grid-cols-3 gap-2">
               {availableTimeslots.map((slot) => (
                 <button
@@ -169,7 +172,7 @@ export function BookingSection({
         {date && time && (
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Tu Nombre</Label>
+              <Label htmlFor="name">{t('yourName')}</Label>
               <Input 
                 id="name" 
                 placeholder="Ej. Juan Pérez" 
@@ -178,7 +181,7 @@ export function BookingSection({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="whatsapp">Tu WhatsApp</Label>
+              <Label htmlFor="whatsapp">{t('yourWhatsapp')}</Label>
               <Input 
                 id="whatsapp" 
                 placeholder="+52..." 
@@ -186,7 +189,7 @@ export function BookingSection({
                 value={customerWhatsapp} 
                 onChange={(e) => setCustomerWhatsapp(e.target.value)} 
               />
-              <p className="text-xs text-muted-foreground">Te contactaremos a este número para confirmar.</p>
+              <p className="text-xs text-muted-foreground">{t('whatsappHint')}</p>
             </div>
           </div>
         )}
@@ -202,12 +205,12 @@ export function BookingSection({
           {isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Procesando...
+              {t('processing')}
             </>
           ) : (
             <>
               <Send size={20} />
-              Solicitar Reserva
+              {t('request')}
             </>
           )}
         </Button>

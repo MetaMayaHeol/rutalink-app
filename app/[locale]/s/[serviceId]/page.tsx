@@ -1,5 +1,6 @@
 import { createStaticClient } from '@/lib/supabase/static'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { Clock, MapPin, Users, Globe, Info, CheckCircle2, XCircle, AlertCircle, CircleDot } from 'lucide-react'
 import { formatPrice, formatDuration } from '@/lib/utils/formatters'
 import { BookingSection } from '@/components/public/BookingSection'
@@ -15,7 +16,7 @@ import { LANGUAGE_NAMES, type Language } from '@/lib/utils/constants'
 export const revalidate = 3600
 
 interface ServicePageProps {
-  params: Promise<{ serviceId: string }>
+  params: Promise<{ locale: string; serviceId: string }>
 }
 
 export async function generateStaticParams() {
@@ -74,7 +75,8 @@ export async function generateMetadata({ params }: ServicePageProps) {
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {
-  const { serviceId } = await params
+  const { serviceId, locale } = await params
+  const t = await getTranslations({ locale, namespace: 'booking' })
   const supabase = createStaticClient()
 
   // 1. Fetch service details
@@ -169,9 +171,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
   // Format Helpers
   const formatLanguage = (lang: string) => LANGUAGE_NAMES[lang as Language] || lang.toUpperCase()
   const cancellations = {
-    flexible: { label: 'Flexible', desc: 'Reembolso completo hasta 24 horas antes.' },
-    moderate: { label: 'Moderada', desc: 'Reembolso del 50% hasta 24 horas antes.' },
-    strict: { label: 'Estricta', desc: 'Sin reembolso por cancelación.' }
+    flexible: { label: t('cancellation.flexible'), desc: t('cancellation.flexibleDesc') },
+    moderate: { label: t('cancellation.moderate'), desc: t('cancellation.moderateDesc') },
+    strict: { label: t('cancellation.strict'), desc: t('cancellation.strictDesc') }
   }
   const cancelPolicy = cancellations[service.cancellation_policy as keyof typeof cancellations] || cancellations.flexible
 
@@ -344,7 +346,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                     <span className="text-4xl font-extrabold text-gray-900 tracking-tight">
                        {formatPrice(service.price)}
                     </span>
-                    <span className="text-gray-500 mb-1 font-medium">MXN / persona</span>
+                    <span className="text-gray-500 mb-1 font-medium">MXN {t('perPerson')}</span>
                   </div>
 
                   {guide.whatsapp ? (
@@ -355,6 +357,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                       availableTimeslots={availableTimeslots}
                       guideId={guide.id}
                       serviceId={service.id}
+                      locale={locale}
                     />
                   ) : (
                     <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-center text-sm">
@@ -367,10 +370,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
                        <div className="bg-green-100 p-2 rounded-full text-green-700">
                           <CheckCircle2 size={16} />
                        </div>
-                       <div>
-                          <p className="font-bold text-sm text-gray-900">Cancelación {cancelPolicy.label}</p>
-                          <p className="text-xs text-gray-500">{cancelPolicy.desc}</p>
-                       </div>
+                        <div>
+                           <p className="font-bold text-sm text-gray-900">{t('cancellation.title')} {cancelPolicy.label}</p>
+                           <p className="text-xs text-gray-500">{cancelPolicy.desc}</p>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -387,7 +390,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                          )}
                      </div>
                      <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">Organizado por</p>
+                        <p className="text-xs text-gray-500 uppercase tracking-wider font-bold">{t('organizedBy')}</p>
                         <p className="font-bold text-gray-900 text-lg">{guide.name}</p>
                      </div>
                   </div>
