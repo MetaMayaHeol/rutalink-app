@@ -31,6 +31,6 @@ export const config = {
   // Match all paths except static files and Next.js internals
   // Removed 'api' from exclusion to allow rate limiting
   matcher: [
-    '/((?!_next|images|favicon.ico|robots.txt|sitemap.xml|auth/callback|auth/signout|.*\\..*).*)',
+    '/((?!_next|images|favicon.ico|robots.txt|sitemap.xml|auth/callback|auth/reset-callback|auth/signout|.*\\..*).*)',
   ],
 }

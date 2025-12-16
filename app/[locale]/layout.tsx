@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Inter } from 'next/font/google'
+import "../globals.css";
 import { Toaster } from '@/components/ui/sonner'
 import { Header } from '@/components/layout/Header'
 import { locales, type Locale } from '@/lib/i18n/config'
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://mysenda.com'),
     title: {
       default: titles[locale] || titles.es,
       template: '%s | MySenda'
