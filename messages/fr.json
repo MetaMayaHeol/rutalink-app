@@ -14,7 +14,11 @@
     "activities": "Activités",
     "guides": "Guides",
     "becomeGuide": "Je suis Guide",
-    "findGuide": "Trouver un Guide"
+    "findGuide": "Trouver un Guide",
+    "dashboard": "Tableau de Bord",
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "language": "Langue"
   },
   "home": {
     "heroTitle": "Réservez des Guides Locaux Vérifiés",
@@ -279,7 +283,17 @@
     "createFirstService": "Créer mon premier service",
     "profileCompletion": "Profil complété à",
     "completeProfile": "Complétez votre profil",
-    "profileIncomplete": "Votre profil est incomplet"
+    "profileIncomplete": "Votre profil est incomplet",
+    "share": "Partager",
+    "viewPage": "Voir ma page",
+    "inviteGuides": "Invitez d'autres guides !",
+    "inviteDesc": "Aidez la communauté à grandir. Partagez MySenda avec d'autres guides.",
+    "inviteBtn": "Inviter des collègues",
+    "bookings": "Réservations",
+    "adminPanel": "Panneau d'administration",
+    "qrTitle": "Votre code QR vous attend",
+    "qrDesc": "Complétez votre profil avec un nom pour générer votre code QR et lien public",
+    "setupProfile": "Configurer le profil"
   },
   "profileForm": {
     "fullName": "Nom complet",

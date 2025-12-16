@@ -101,10 +101,10 @@ export async function ActivitiesGrid() {
                   {/* Content */}
                   <div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-700 transition-colors">
-                      {activity.name}
+                      {t(`${activity.slug}.name`)}
                     </h3>
                     <p className="text-sm text-gray-500 line-clamp-2">
-                      {activity.description.split('.')[0]}
+                      {t(`${activity.slug}.description`).split('.')[0]}
                     </p>
                   </div>
 

@@ -1,10 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 import { DirectoryClient } from '@/components/directory/DirectoryClient'
-import { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 
-export const metadata: Metadata = {
-  title: 'Explorar Guías Turísticos | MySenda',
-  description: 'Encuentra y conecta con guías turísticos locales verificados en México. Tours auténticos y experiencias únicas.',
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'explorar' })
+ 
+  return {
+    title: `${t('title')} | MySenda`,
+    description: t('metaDescription')
+  }
 }
 
 // Force dynamic to ensure we see the latest data (and avoid caching issues during testing)

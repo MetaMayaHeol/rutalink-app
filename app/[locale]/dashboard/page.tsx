@@ -8,9 +8,11 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { isAdmin } from '@/lib/auth/admin'
 import { Share2 } from 'lucide-react'
 import { ShareButton } from '@/components/public/ShareButton'
+import { getTranslations } from 'next-intl/server'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
+  const t = await getTranslations('dashboard')
 
   const {
     data: { user },
@@ -64,7 +66,7 @@ export default async function DashboardPage() {
             )}
           </div>
           <div className="flex-1">
-            <h2 className="font-bold text-gray-900">Mi página</h2>
+            <h2 className="font-bold text-gray-900">{t('viewPage')}</h2>
             <p className="text-sm text-gray-600">
               <PublicLinkDisplay slug={publicLink?.slug || null} />
             </p>
@@ -74,17 +76,17 @@ export default async function DashboardPage() {
           <div className="flex gap-2 w-full mt-3">
             <Link href={`/g/${publicLink.slug}`} className="flex-1">
               <Button variant="outline" className="w-full">
-                👁️ Ver mi página
+                👁️ {t('viewPage')}
               </Button>
             </Link>
             <ShareButton 
-              title={`Perfil de ${profile?.name || 'Guía'}`}
+              title={`${t('profile')}: ${profile?.name || 'Guía'}`}
               text={`Hola! Echa un vistazo a mi perfil de guía turístico en MySenda: `}
               url={`${process.env.NEXT_PUBLIC_APP_URL || 'https://mysenda.com'}/g/${publicLink.slug}`}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white border-0"
               variant="default"
             >
-              <Share2 size={16} className="mr-2" /> Compartir
+              <Share2 size={16} className="mr-2" /> {t('share')}
             </ShareButton>
           </div>
         )}
@@ -97,9 +99,9 @@ export default async function DashboardPage() {
             <Share2 size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-blue-900">¡Invita a otros guías!</h3>
+            <h3 className="font-bold text-blue-900">{t('inviteGuides')}</h3>
             <p className="text-sm text-blue-700 mb-3">
-              Ayuda a crecer la comunidad. Comparte MySenda con otros guías.
+              {t('inviteDesc')}
             </p>
             <ShareButton
               title="Únete a MySenda"
@@ -108,7 +110,7 @@ export default async function DashboardPage() {
               className="bg-blue-600 hover:bg-blue-700 text-white h-9 px-4 text-sm w-full sm:w-auto"
               variant="default"
             >
-              Invitar Colegas
+              {t('inviteBtn')}
             </ShareButton>
           </div>
         </div>
@@ -117,7 +119,7 @@ export default async function DashboardPage() {
       {/* Services List */}
       <div className="p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold">Mis servicios</h3>
+          <h3 className="text-lg font-bold">{t('services')}</h3>
         </div>
 
         {services && services.length > 0 ? (
@@ -147,9 +149,9 @@ export default async function DashboardPage() {
         ) : (
           <EmptyState
             icon="🎯"
-            title="¡Crea tu primer servicio!"
-            description="Comparte tus tours y experiencias con viajeros de todo el mundo"
-            actionLabel="Agregar un servicio"
+            title={t('createFirstService')}
+            description={t('noServicesDesc')}
+            actionLabel={t('addService')}
             actionHref="/dashboard/services/new"
           />
         )}
@@ -157,7 +159,7 @@ export default async function DashboardPage() {
         {/* Add Service Button */}
         <Link href="/dashboard/services/new">
           <Button className="w-full bg-green-500 hover:bg-green-600 text-white font-bold mt-4 h-12">
-            ➕ Agregar un servicio
+            ➕ {t('addService')}
           </Button>
         </Link>
 
@@ -165,33 +167,33 @@ export default async function DashboardPage() {
         <div className={`grid ${userIsAdmin ? 'grid-cols-2' : 'grid-cols-2'} gap-3 mt-4`}>
           <Link href="/dashboard/bookings">
             <Button variant="outline" className="w-full h-12 text-orange-700 border-orange-200 bg-orange-50 hover:bg-orange-100">
-              📋 Reservaciones
+              📋 {t('bookings')}
             </Button>
           </Link>
           <Link href="/dashboard/availability">
             <Button variant="outline" className="w-full h-12">
-              📅 Disponibilidades
+              📅 {t('availability')}
             </Button>
           </Link>
           <Link href="/dashboard/profile">
             <Button variant="outline" className="w-full h-12">
-              👤 Mi perfil
+              👤 {t('profile')}
             </Button>
           </Link>
           <Link href="/dashboard/analytics">
             <Button variant="outline" className="w-full h-12">
-              📊 Analytics
+              📊 {t('analytics')}
             </Button>
           </Link>
           <Link href="/dashboard/verification">
             <Button variant="outline" className="w-full h-12 text-green-700 border-green-200 bg-green-50 hover:bg-green-100">
-              🛡️ Verificación
+              🛡️ {t('verification')}
             </Button>
           </Link>
           {userIsAdmin && (
             <Link href="/dashboard/admin/reviews" className="col-span-2">
               <Button variant="outline" className="w-full h-12 text-purple-700 border-purple-200 bg-purple-50 hover:bg-purple-100">
-                👑 Panel de administración
+                👑 {t('adminPanel')}
               </Button>
             </Link>
           )}
@@ -206,9 +208,9 @@ export default async function DashboardPage() {
           <div className="mt-6">
             <EmptyState
               icon="📱"
-              title="Tu código QR te espera"
-              description="Completa tu perfil con un nombre para generar tu código QR y enlace público"
-              actionLabel="Configurar perfil"
+              title={t('qrTitle')}
+              description={t('qrDesc')}
+              actionLabel={t('setupProfile')}
               actionHref="/dashboard/profile"
             />
           </div>

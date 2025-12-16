@@ -14,7 +14,11 @@
     "activities": "Actividades",
     "guides": "Guías",
     "becomeGuide": "Soy Guía",
-    "findGuide": "Buscar Guía"
+    "findGuide": "Buscar Guía",
+    "dashboard": "Dashboard",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "language": "Idioma"
   },
   "home": {
     "heroTitle": "Reserva Guías Locales Verificados",
@@ -279,7 +283,17 @@
     "createFirstService": "Crear mi primer servicio",
     "profileCompletion": "Perfil completado al",
     "completeProfile": "Completa tu perfil",
-    "profileIncomplete": "Tu perfil está incompleto"
+    "profileIncomplete": "Tu perfil está incompleto",
+    "share": "Compartir",
+    "viewPage": "Ver mi página",
+    "inviteGuides": "¡Invita a otros guías!",
+    "inviteDesc": "Ayuda a crecer la comunidad. Comparte MySenda con otros guías.",
+    "inviteBtn": "Invitar Colegas",
+    "bookings": "Reservaciones",
+    "adminPanel": "Panel de administración",
+    "qrTitle": "Tu código QR te espera",
+    "qrDesc": "Completa tu perfil con un nombre para generar tu código QR y enlace público",
+    "setupProfile": "Configurar perfil"
   },
   "profileForm": {
     "fullName": "Nombre completo",

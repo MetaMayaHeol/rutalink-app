@@ -23,6 +23,8 @@ import { User } from '@supabase/supabase-js'
 export function Header({ user }: { user?: User | null }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const t = useTranslations('nav')
+  const tActivities = useTranslations('activities')
+  const tCommon = useTranslations('common')
   const locale = useLocale()
   const pathname = usePathname()
   
@@ -115,7 +117,7 @@ export function Header({ user }: { user?: User | null }) {
                 {activities.map((activity) => (
                   <DropdownMenuItem key={activity.slug} asChild>
                     <Link href={`/${locale}/actividad/${activity.slug}`} className="cursor-pointer">
-                      {activity.name}
+                      {tActivities(`${activity.slug}.name`)}
                     </Link>
                   </DropdownMenuItem>
                 ))}
@@ -127,11 +129,11 @@ export function Header({ user }: { user?: User | null }) {
                <div className="flex items-center gap-2 ml-4">
                  <NotificationsBell userId={user.id} />
                  <Link href={`/${locale}/dashboard`}>
-                   <Button variant="ghost" size="sm">Dashboard</Button>
+                   <Button variant="ghost" size="sm">{t('dashboard')}</Button>
                  </Link>
                  <form action="/auth/signout" method="post">
                    <Button type="submit" variant="ghost" size="icon" className="text-gray-500 hover:text-red-600">
-                     <span className="sr-only">Cerrar sesión</span>
+                     <span className="sr-only">{t('logout')}</span>
                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
                    </Button>
                  </form>
@@ -140,7 +142,7 @@ export function Header({ user }: { user?: User | null }) {
                <div className="flex items-center gap-2 ml-4">
                  <Link href={`/${locale}/auth/login`}>
                    <Button variant="ghost" size="sm">
-                     Log In
+                     {t('login')}
                    </Button>
                  </Link>
                  <Link href={`/${locale}/auth/login?view=signup&role=guide`}>
@@ -158,7 +160,7 @@ export function Header({ user }: { user?: User | null }) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="gap-1">
                 <Globe size={18} />
-                <span className="sr-only">Language</span>
+                <span className="sr-only">{t('language')}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -198,7 +200,7 @@ export function Header({ user }: { user?: User | null }) {
                     </Link>
                  ))}
                  <Link href={`/${locale}/explorar`} className="text-green-600 font-medium py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                   Ver todos...
+                   {tCommon('viewAll')}...
                  </Link>
               </div>
             </div>
@@ -208,7 +210,7 @@ export function Header({ user }: { user?: User | null }) {
               <div className="grid grid-cols-2 gap-2">
                  {activities.slice(0, 4).map(act => (
                     <Link key={act.slug} href={`/${locale}/actividad/${act.slug}`} className="text-gray-600 py-1" onClick={() => setIsMobileMenuOpen(false)}>
-                      {act.name}
+                      {tActivities(`${act.slug}.name`)}
                     </Link>
                  ))}
               </div>
