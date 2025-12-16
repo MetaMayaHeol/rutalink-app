@@ -82,7 +82,7 @@ export async function submitReview(formData: FormData) {
 
   if (error) {
     console.error('Error submitting review:', error)
-    return { error: 'Error al guardar la reseña. Inténtalo de nuevo.' }
+    return { error: `Error al guardar la reseña: ${error.message}` }
   }
 
   // Note: Review won't appear until admin approves it

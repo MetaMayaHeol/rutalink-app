@@ -1,32 +1,30 @@
--- AI Infrastructure Migration
+-- Feature: AI Infrastructure
+-- Consolidates Vector Search and Agent Auth
 
 -- 1. Enable extensions
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS vector;
 
--- 2. Create embeddings table for RAG (Retrieval Augmented Generation)
+-- 2. Embeddings Table
 CREATE TABLE IF NOT EXISTS knowledge_embeddings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  content TEXT NOT NULL, -- The text chunk
-  metadata JSONB, -- Context (e.g. source url, guide_id, service_id)
-  embedding VECTOR(1536), -- OpenAI text-embedding-3-small dimension
+  content TEXT NOT NULL, 
+  metadata JSONB, 
+  embedding VECTOR(1536), 
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 3. Create HNSW index for fast similarity search
 CREATE INDEX IF NOT EXISTS knowledge_embeddings_embedding_idx 
 ON knowledge_embeddings 
 USING hnsw (embedding vector_cosine_ops);
 
--- 4. Enable RLS on embeddings
+-- RLS
 ALTER TABLE knowledge_embeddings ENABLE ROW LEVEL SECURITY;
 
--- Allow public read (agent needs to read, usually via service role, but good to have policy)
 CREATE POLICY "Enable read access for all users" 
 ON knowledge_embeddings FOR SELECT 
 USING (true);
 
--- Allow insert only by admin/service_role
 CREATE POLICY "Enable insert for admins only" 
 ON knowledge_embeddings FOR INSERT 
 WITH CHECK (
@@ -35,7 +33,7 @@ WITH CHECK (
   )
 );
 
--- 5. Create function to match embeddings (Semantic Search)
+-- 3. Match Documents Function
 CREATE OR REPLACE FUNCTION match_documents (
   query_embedding VECTOR(1536),
   match_threshold FLOAT,
@@ -64,21 +62,19 @@ BEGIN
 END;
 $$;
 
--- 6. API Keys for Agent Authentication (Secure access for n8n/Flowise)
+-- 4. API Keys (Agent Auth)
 CREATE TABLE IF NOT EXISTS api_keys (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL, -- e.g. "n8n-agent"
-  key_hash TEXT NOT NULL, -- We store the HASH, not the key itself
+  name TEXT NOT NULL, 
+  key_hash TEXT NOT NULL, 
   is_active BOOLEAN DEFAULT true,
   last_used_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_by UUID REFERENCES users(id)
 );
 
--- RLS for API Keys
 ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;
 
--- Only admins can see/manage API keys
 CREATE POLICY "Admins can manage api keys" 
 ON api_keys 
 USING (
