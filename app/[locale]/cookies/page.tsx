@@ -88,10 +88,51 @@ export default async function CookiesPage({ params }: { params: Promise<{ locale
           </p>
         </section>
       </div>
+    ),
+    en: (
+      <div className="space-y-6">
+        <section>
+          <h2 className="text-xl font-semibold mb-3">1. What are cookies?</h2>
+          <p>
+            Cookies are small text files that websites you visit save on your computer or mobile device. They are widely used to make websites work, or work more efficiently, as well as to provide information to site owners.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">2. How do we use cookies?</h2>
+          <p>We use cookies to:</p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li><strong>Essential Cookies:</strong> Necessary for the site to function (e.g., keeping your session active).</li>
+            <li><strong>Performance Cookies:</strong> Help us understand how visitors interact with the site (e.g., most visited pages) anonymously.</li>
+            <li><strong>Functionality Cookies:</strong> Allow the site to remember your preferences (e.g., language).</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">3. Third-party Cookies</h2>
+          <p>
+            We may use third-party services (such as analytics tools) that may also set cookies on your device. MySenda does not control these cookies.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">4. How to control cookies?</h2>
+          <p>
+            You can control and/or delete cookies as you wish. You can delete all cookies already on your computer and can set most browsers to prevent them from being placed. However, if you do this, you may have to manually adjust some preferences every time you visit a site and some services and functionalities may not work.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">5. Updates</h2>
+          <p>
+            Our Cookie Policy may change occasionally. We recommend reviewing this page periodically to stay informed about cookie usage.
+          </p>
+        </section>
+      </div>
     )
   }
 
-  const selectedContent = locale === 'fr' ? content.fr : content.es
+  const selectedContent = locale === 'en' ? content.en : (locale === 'fr' ? content.fr : content.es)
 
   return (
     <div className="container mx-auto px-5 py-24">

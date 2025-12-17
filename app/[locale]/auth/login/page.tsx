@@ -5,6 +5,7 @@ import { signInWithEmail, signInWithGoogle, signInWithPassword, signUpWithPasswo
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useTranslations } from 'next-intl'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,6 +17,7 @@ const initialState = {
 
 function EmailPasswordForm({ origin }: { origin: string }) {
   const [authMethod, setAuthMethod] = useState<'login' | 'signup' | 'magic'>('login')
+  const t = useTranslations('auth')
   
   const actionToUse = useMemo(() => {
     switch (authMethod) {
@@ -32,12 +34,12 @@ function EmailPasswordForm({ origin }: { origin: string }) {
       <input type="hidden" name="origin" value={origin} />
       
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t('emailLabel')}</Label>
         <Input
           id="email"
           name="email"
           type="email"
-          placeholder="tu@email.com"
+          placeholder={t('emailPlaceholder')}
           required
           disabled={isPending}
           className="h-12"
@@ -46,19 +48,19 @@ function EmailPasswordForm({ origin }: { origin: string }) {
 
       {authMethod !== 'magic' && (
         <div className="space-y-2">
-          <Label htmlFor="password">Contraseña</Label>
+          <Label htmlFor="password">{t('passwordLabel')}</Label>
           <Input
             id="password"
             name="password"
             type="password"
-            placeholder="••••••••"
+            placeholder={t('passwordPlaceholder')}
             required
             disabled={isPending}
             className="h-12"
             minLength={8}
           />
           {authMethod === 'signup' && (
-            <p className="text-xs text-gray-500">Mínimo 8 caracteres</p>
+            <p className="text-xs text-gray-500">{t('minChars')}</p>
           )}
         </div>
       )}
@@ -68,10 +70,10 @@ function EmailPasswordForm({ origin }: { origin: string }) {
         disabled={isPending}
         className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-bold"
       >
-        {isPending ? 'Procesando...' : (
-          authMethod === 'login' ? 'Iniciar Sesión' : 
-          authMethod === 'signup' ? 'Crear Cuenta' : 
-          'Enviar enlace mágico'
+        {isPending ? t('processing') : (
+          authMethod === 'login' ? t('loginBtn') : 
+          authMethod === 'signup' ? t('signupBtn') : 
+          t('magicLinkBtn')
         )}
       </Button>
 
@@ -94,7 +96,7 @@ function EmailPasswordForm({ origin }: { origin: string }) {
             onClick={() => setAuthMethod('login')}
             className="text-sm text-green-600 hover:underline font-medium block w-full"
           >
-            Usar contraseña
+            {t('usePassword')}
           </button>
         ) : (
           <button
@@ -102,7 +104,7 @@ function EmailPasswordForm({ origin }: { origin: string }) {
             onClick={() => setAuthMethod('magic')}
             className="text-sm text-gray-500 hover:text-gray-800 hover:underline block w-full"
           >
-            ¿Prefieres iniciar sesión sin contraseña?
+            {t('magicLinkPref')}
           </button>
         )}
 
@@ -112,7 +114,7 @@ function EmailPasswordForm({ origin }: { origin: string }) {
             onClick={() => setAuthMethod(authMethod === 'login' ? 'signup' : 'login')}
             className="text-sm text-green-600 hover:underline font-medium"
           >
-            {authMethod === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
+            {authMethod === 'login' ? t('noAccount') : t('hasAccount')}
           </button>
         )}
       </div>
@@ -122,6 +124,7 @@ function EmailPasswordForm({ origin }: { origin: string }) {
 
 export default function LoginPage() {
   const [googleState, googleAction, isGooglePending] = useActionState(signInWithGoogle, initialState)
+  const t = useTranslations('auth')
 
   // Use useMemo for derived values instead of useState+useEffect
   const origin = useMemo(() => {
@@ -140,16 +143,16 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="w-20 h-20 bg-green-500 rounded-2xl mx-auto mb-8 flex items-center justify-center">
-          <span className="text-white text-3xl font-bold">R</span>
+          <span className="text-white text-3xl font-bold">M</span>
         </div>
 
         <h1 className="text-3xl font-bold text-center mb-2">
-          {isGuideSignup ? 'Regístrate como Guía' : 'MySenda'}
+          {isGuideSignup ? t('guideSignupTitle') : 'MySenda'}
         </h1>
         <p className="text-center text-gray-600 mb-8">
           {isGuideSignup 
-            ? 'Únete a la comunidad de guías verificados.' 
-            : 'Inicia sesión o crea tu cuenta'}
+            ? t('guideSignupDesc')
+            : t('loginDesc')}
         </p>
 
         {/* Google Login */}
@@ -179,7 +182,7 @@ export default function LoginPage() {
                 fill="#EA4335"
               />
             </svg>
-            {isGooglePending ? 'Redirigiendo...' : 'Continuar con Google'}
+            {isGooglePending ? t('redirecting') : t('continueGoogle')}
           </Button>
           {googleState?.error && (
             <div className="mt-2 p-3 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200">
@@ -193,7 +196,7 @@ export default function LoginPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-gray-500">O con email</span>
+            <span className="bg-white px-2 text-gray-500">{t('orEmail')}</span>
           </div>
         </div>
 
@@ -202,7 +205,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           <a href="/auth/forgot-password" className="hover:underline">
-            ¿Olvidaste tu contraseña?
+            {t('forgotPassword')}
           </a>
         </p>
       </div>

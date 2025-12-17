@@ -150,10 +150,82 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
           </p>
         </section>
       </div>
+    ),
+    en: (
+      <div className="space-y-6">
+        <section>
+          <h2 className="text-xl font-semibold mb-3">1. Introduction</h2>
+          <p>
+            Welcome to MySenda. We take your privacy very seriously. This Privacy Policy describes how we collect, use, and protect your personal information when you use our platform to connect with local tour guides.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">2. Information We Collect</h2>
+          <p>We may collect the following information:</p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Contact information (name, phone number for WhatsApp).</li>
+            <li>Guide profile information (photos, description, languages).</li>
+            <li>Usage and navigation data on our platform.</li>
+            <li>Communications made through our contact tools.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">3. Use of Information</h2>
+          <p>We use your information to:</p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Facilitate direct connection between travelers and tour guides.</li>
+            <li>Improve our services and user experience.</li>
+            <li>Send important notifications about your account or services.</li>
+            <li>Ensure security and verify identity of guides (where applicable).</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">4. Information Sharing</h2>
+          <p>
+            We do not sell your personal information to third parties. We share your information only with:
+          </p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li><strong>Tour Guides:</strong> When you decide to contact a guide, we share necessary information to facilitate communication (e.g., redirecting to WhatsApp).</li>
+            <li><strong>Service Providers:</strong> Who help us operate the platform (e.g., web hosting, analytics).</li>
+            <li><strong>Legal Authorities:</strong> When required by law.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">5. Data Security</h2>
+          <p>
+            We implement reasonable security measures to protect your information. However, no transmission over the internet is 100% secure, and we cannot guarantee absolute security of data transmitted to our platform.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">6. Your Rights</h2>
+          <p>
+            You have the right to access, correct, or delete your personal information. If you have a guide account, you can edit your profile directly. For other requests, please contact us via our support channel.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">7. Changes to this Policy</h2>
+          <p>
+            We may update this policy occasionally. We will notify you of significant changes by posting the new policy on this page.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">8. Contact</h2>
+          <p>
+            If you have questions about this policy, please contact us via our Support page.
+          </p>
+        </section>
+      </div>
     )
   }
 
-  const selectedContent = locale === 'fr' ? content.fr : content.es
+  const selectedContent = locale === 'en' ? content.en : (locale === 'fr' ? content.fr : content.es)
 
   return (
     <div className="container mx-auto px-5 py-24">

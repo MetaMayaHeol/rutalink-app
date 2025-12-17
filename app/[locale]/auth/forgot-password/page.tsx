@@ -5,6 +5,7 @@ import { sendPasswordResetEmail } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useTranslations } from 'next-intl'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,6 +17,7 @@ const initialState = {
 
 export default function ForgotPasswordPage() {
   const [state, action, isPending] = useActionState(sendPasswordResetEmail, initialState)
+  const t = useTranslations('auth')
   
   const origin = useMemo(() => {
     if (typeof window === 'undefined') return ''
@@ -26,9 +28,9 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-5">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-2">Recuperar contraseña</h1>
+          <h1 className="text-2xl font-bold mb-2">{t('forgotPasswordTitle')}</h1>
           <p className="text-gray-600">
-            Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+            {t('forgotPasswordDesc')}
           </p>
         </div>
 
@@ -36,12 +38,12 @@ export default function ForgotPasswordPage() {
           <input type="hidden" name="origin" value={origin} />
           
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('emailLabel')}</Label>
             <Input
               id="email"
               name="email"
               type="email"
-              placeholder="tu@email.com"
+              placeholder={t('emailPlaceholder')}
               required
               disabled={isPending}
               className="h-12"
@@ -53,7 +55,7 @@ export default function ForgotPasswordPage() {
             disabled={isPending}
             className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-bold"
           >
-            {isPending ? 'Enviando...' : 'Enviar enlace'}
+            {isPending ? t('sending') : t('sendLinkBtn')}
           </Button>
 
           {state?.error && (
@@ -71,7 +73,7 @@ export default function ForgotPasswordPage() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           <a href="/auth/login" className="text-green-600 hover:underline font-medium">
-            Volver al inicio de sesión
+            {t('backToLogin')}
           </a>
         </p>
       </div>

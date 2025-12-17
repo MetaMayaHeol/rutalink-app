@@ -1,4 +1,4 @@
-export const locales = ['es', 'fr'] as const
+export const locales = ['es', 'fr', 'en'] as const
 export const defaultLocale = 'es' as const
 
 export type Locale = (typeof locales)[number]
@@ -9,13 +9,20 @@ export const pathTranslations: Record<Locale, Record<string, string>> = {
     ciudad: 'ciudad',
     actividad: 'actividad',
     explorar: 'explorar',
-    soporte: 'support',
+    soporte: 'soporte',
     faq: 'faq',
   },
   fr: {
     ciudad: 'ville',
     actividad: 'activite',
     explorar: 'explorer',
+    soporte: 'support',
+    faq: 'faq',
+  },
+  en: {
+    ciudad: 'city',
+    actividad: 'activity',
+    explorar: 'explore',
     soporte: 'support',
     faq: 'faq',
   },

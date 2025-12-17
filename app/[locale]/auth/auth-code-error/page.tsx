@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AlertTriangle } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 
-export default function AuthErrorPage() {
+export default async function AuthErrorPage() {
+  const t = await getTranslations('auth')
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
@@ -11,16 +14,16 @@ export default function AuthErrorPage() {
         </div>
         
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          Error de Autenticación
+          {t('authErrorTitle')}
         </h1>
         
         <p className="text-gray-600 mb-8">
-          Hubo un problema al verificar tu sesión. Esto puede suceder si el enlace ha expirado o ya fue utilizado.
+          {t('authErrorDesc')}
         </p>
 
         <Link href="/auth/login">
           <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold h-12">
-            Volver a intentar
+            {t('tryAgainBtn')}
           </Button>
         </Link>
       </div>

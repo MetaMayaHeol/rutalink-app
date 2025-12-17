@@ -152,10 +152,83 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
           </p>
         </section>
       </div>
+    ),
+    en: (
+      <div className="space-y-6">
+        <section>
+          <h2 className="text-xl font-semibold mb-3">1. Acceptance of Terms</h2>
+          <p>
+            By accessing and using MySenda, you agree to be legally bound by these Terms of Service. If you do not agree with any part of these terms, you must not use our services.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">2. Service Description</h2>
+          <p>
+            MySenda is a digital platform that facilitates the connection between travelers and local tour guides. We act solely as a directory and contact facilitator. MySenda is an independent technological tool and not a travel agency or tour operator.
+          </p>
+          <p className="mt-2">
+            We do not organize or control the tours offered by guides. Booking services is a direct agreement between the traveler and the guide.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">3. User Accounts</h2>
+          <p>
+            To access certain features, you may need to register. You are responsible for maintaining the confidentiality of your account and all activity occurring under it. You must provide accurate and up-to-date information.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">4. User Conduct</h2>
+          <p>You agree not to use the service to:</p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Post false, inaccurate, or misleading content.</li>
+            <li>Harass, threaten, or defame other users or guides.</li>
+            <li>Infringe intellectual property rights or privacy.</li>
+            <li>Engage in fraudulent or illegal activities.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">5. Guide Responsibilities</h2>
+          <p>
+             Guides are independent professionals responsible for the quality, safety, and legality of their services. MySenda verifies certain data but does not guarantee the performance of any guide.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">6. Limitation of Liability</h2>
+          <p>
+            MySenda <strong>shall not be liable</strong> for any damages, injuries, losses, or disputes arising from interactions or transactions between users and guides. Any claim related to a tour must be directed to the relevant guide.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">7. Payments</h2>
+          <p>
+            Most transactions are agreed upon and made directly between the traveler and the guide (e.g., cash payment or direct transfer). MySenda does not charge commissions for these direct transactions and is not responsible for processing these payments or issuing refunds.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">8. Intellectual Property</h2>
+          <p>
+            All platform content (design, logos, text) is owned by MySenda or its licensors and is protected by copyright.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold mb-3">9. Applicable Law</h2>
+          <p>
+            These terms shall be governed and interpreted in accordance with the laws of Mexico. Any dispute shall be submitted to the exclusive jurisdiction of the competent courts in that jurisdiction.
+          </p>
+        </section>
+      </div>
     )
   }
 
-  const selectedContent = locale === 'fr' ? content.fr : content.es
+  const selectedContent = locale === 'en' ? content.en : (locale === 'fr' ? content.fr : content.es)
 
   return (
     <div className="container mx-auto px-5 py-24">
