@@ -38,16 +38,16 @@ export async function BusinessModelSection() {
                 </div>
               </div>
               <div className="flex gap-4 items-start">
-                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
                   <TrendingUp className="text-gray-700" size={20} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">{t('unlimitedPublishing')}</h4>
-                  <p className="text-sm text-gray-600">{t('unlimitedPublishingDesc')}</p>
+                  <h4 className="font-semibold text-foreground">{t('unlimitedPublishing')}</h4>
+                  <p className="text-sm text-muted-foreground">{t('unlimitedPublishingDesc')}</p>
                 </div>
               </div>
               <div className="flex gap-4 items-start">
-                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
                   <BarChart3 className="text-gray-700" size={20} />
                 </div>
                 <div>
@@ -61,10 +61,10 @@ export async function BusinessModelSection() {
               <p className="text-sm text-gray-700 font-medium">
                 ✓ {t('noCommission')}
               </p>
-              <p className="text-sm text-gray-700 font-medium">
+              <p className="text-sm text-foreground/80 font-medium">
                 ✓ {t('directChat')}
               </p>
-              <p className="text-sm text-gray-700 font-medium">
+              <p className="text-sm text-foreground/80 font-medium">
                 ✓ {t('priceControl')}
               </p>
             </div>
@@ -115,10 +115,10 @@ export async function BusinessModelSection() {
               <p className="text-sm text-gray-700 font-medium">
                 ✓ {t('payAsYouGo')}
               </p>
-              <p className="text-sm text-gray-700 font-medium">
+              <p className="text-sm text-foreground/80 font-medium">
                 ✓ {t('noLongContracts')}
               </p>
-              <p className="text-sm text-gray-700 font-medium">
+              <p className="text-sm text-foreground/80 font-medium">
                 ✓ {t('cancelAnytime')}
               </p>
             </div>

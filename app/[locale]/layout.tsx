@@ -12,6 +12,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/seo/structured-data'
 import { Analytics } from '@vercel/analytics/next'
 
+
 const inter = Inter({ subsets: ['latin'] })
 
 type Props = {
@@ -105,12 +106,12 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale}>
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages}>
-          <JsonLd data={orgSchema} />
-          <JsonLd data={websiteSchema} />
-          <Header user={user} />
-          {children}
-          <Toaster />
-          <Analytics />
+            <JsonLd data={orgSchema} />
+            <JsonLd data={websiteSchema} />
+            <Header user={user} />
+            {children}
+            <Toaster />
+            <Analytics />
         </NextIntlClientProvider>
       </body>
     </html>

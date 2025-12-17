@@ -224,21 +224,21 @@ export default async function HomePage({ params }: Props) {
                   <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600 font-bold flex-shrink-0">1</div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">{tHow('step1Title')}</h4>
-                    <p className="text-gray-600">{tHow('step1Desc')}</p>
+                    <p className="text-muted-foreground">{tHow('step1Desc')}</p>
                   </div>
                 </li>
                 <li className="flex gap-4">
                   <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600 font-bold flex-shrink-0">2</div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">{tHow('step2Title')}</h4>
-                    <p className="text-gray-600">{tHow('step2Desc')}</p>
+                    <p className="text-muted-foreground">{tHow('step2Desc')}</p>
                   </div>
                 </li>
                 <li className="flex gap-4">
                   <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600 font-bold flex-shrink-0">3</div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">{tHow('step3Title')}</h4>
-                    <p className="text-gray-600">{tHow('step3Desc')}</p>
+                    <p className="text-muted-foreground">{tHow('step3Desc')}</p>
                   </div>
                 </li>
               </ul>
@@ -261,14 +261,14 @@ export default async function HomePage({ params }: Props) {
                   <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold flex-shrink-0">2</div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">{tHow('guideStep2Title')}</h4>
-                    <p className="text-gray-600">{tHow('guideStep2Desc')}</p>
+                    <p className="text-muted-foreground">{tHow('guideStep2Desc')}</p>
                   </div>
                 </li>
                 <li className="flex gap-4">
                   <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold flex-shrink-0">3</div>
                   <div>
                     <h4 className="font-bold text-lg mb-1">{tHow('guideStep3Title')}</h4>
-                    <p className="text-gray-600">{tHow('guideStep3Desc')}</p>
+                    <p className="text-muted-foreground">{tHow('guideStep3Desc')}</p>
                   </div>
                 </li>
               </ul>

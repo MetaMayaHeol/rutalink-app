@@ -43,11 +43,11 @@ export function Header({ user }: { user?: User | null }) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+    <header className="sticky top-0 z-50 w-full border-b bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/80 text-white">
       <div className="container mx-auto px-5">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center gap-2 font-bold text-xl text-gray-900 hover:text-green-600 transition-colors">
+          <Link href={`/${locale}`} className="flex items-center gap-2 font-bold text-xl text-white hover:text-green-400 transition-colors">
             <Compass className="text-green-600" size={28} />
             MySenda
           </Link>
@@ -185,17 +185,17 @@ export function Header({ user }: { user?: User | null }) {
 
       {/* Mobile Menu Content */}
       {isMobileMenuOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg p-5 flex flex-col gap-4 md:hidden animate-in slide-in-from-top-2">
-            <Link href={`/${locale}/explorar`} className="flex items-center gap-2 py-2 text-lg font-medium text-gray-800" onClick={() => setIsMobileMenuOpen(false)}>
+        <div className="absolute top-16 left-0 right-0 bg-gray-900 border-b border-gray-800 shadow-lg p-5 flex flex-col gap-4 md:hidden animate-in slide-in-from-top-2">
+            <Link href={`/${locale}/explorar`} className="flex items-center gap-2 py-2 text-lg font-medium text-white" onClick={() => setIsMobileMenuOpen(false)}>
               <Compass size={20} className="text-green-600" />
               {t('guides')}
             </Link>
             
             <div className="py-2">
-              <div className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wide">{t('destinations')}</div>
+              <div className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wide">{t('destinations')}</div>
               <div className="grid grid-cols-2 gap-2">
                  {yucatan.slice(0, 4).map(city => (
-                    <Link key={city.slug} href={`/${locale}/ciudad/${city.slug}`} className="text-gray-600 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link key={city.slug} href={`/${locale}/ciudad/${city.slug}`} className="text-gray-300 py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       {city.name}
                     </Link>
                  ))}
@@ -205,18 +205,18 @@ export function Header({ user }: { user?: User | null }) {
               </div>
             </div>
 
-            <div className="py-2 border-t border-gray-100">
-              <div className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wide">{t('activities')}</div>
+            <div className="py-2 border-t border-gray-800">
+              <div className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wide">{t('activities')}</div>
               <div className="grid grid-cols-2 gap-2">
                  {activities.slice(0, 4).map(act => (
-                    <Link key={act.slug} href={`/${locale}/actividad/${act.slug}`} className="text-gray-600 py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link key={act.slug} href={`/${locale}/actividad/${act.slug}`} className="text-gray-300 py-1" onClick={() => setIsMobileMenuOpen(false)}>
                       {tActivities(`${act.slug}.name`)}
                     </Link>
                  ))}
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-gray-100">
+            <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-gray-800">
                <Link href={`/${locale}/auth/login`} onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="outline" className="w-full justify-center">
                     {t('becomeGuide')}
