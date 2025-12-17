@@ -339,7 +339,7 @@ export default async function HomePage({ params }: Props) {
               <ul className="space-y-2">
                 <li><Link href={`/${locale}/terms`} className="hover:text-green-400 transition-colors">{tFooter('terms')}</Link></li>
                 <li><Link href={`/${locale}/privacy`} className="hover:text-green-400 transition-colors">{tFooter('privacy')}</Link></li>
-                <li><Link href="#" className="hover:text-green-400 transition-colors">{tFooter('cookies')}</Link></li>
+                <li><Link href={`/${locale}/cookies`} className="hover:text-green-400 transition-colors">{tFooter('cookies')}</Link></li>
               </ul>
             </div>
           </div>
