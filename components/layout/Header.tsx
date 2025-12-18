@@ -241,7 +241,7 @@ export function Header({ user }: { user?: User | null }) {
 
             <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-gray-800">
                <Link href={`/${locale}/auth/login`} onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full justify-center">
+                  <Button variant="outline" className="w-full justify-center bg-transparent text-white border-gray-600 hover:bg-gray-800 hover:text-white">
                     {t('becomeGuide')}
                   </Button>
                </Link>
